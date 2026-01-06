@@ -1,22 +1,42 @@
-// Virtual State: Is the user logged in?
-// In a real app, this would come from a database/session
+// Virtual State
 let isUserLoggedIn = false; 
 
-// 1. Function to handle clicking a product
-function triggerProductAction() {
-    if (isUserLoggedIn) {
-        // If logged in -> Add to cart or go to product details
-        alert("Product added to cart! (Virtual Action)");
-        // window.location.href = "cart.html";
-    } else {
-        // If NOT logged in -> Redirect to Authentication
-        console.log("User not logged in. Redirecting...");
-        window.location.href = "user_authentication.html"; 
-        // Note: You must create a file named 'user_authentication.html'
+// 1. Logic for clicking the Card (Tap to Reveal)
+function toggleCard(clickedCard) {
+    // Check if currently active
+    const isActive = clickedCard.classList.contains('active');
+
+    // Close ALL other cards first
+    const allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => card.classList.remove('active'));
+
+    // If it wasn't active, open it now
+    if (!isActive) {
+        clickedCard.classList.add('active');
     }
 }
 
-// 2. Function to handle cart icon click
+// 2. Logic for clicking the Button
+function addToCart(event) {
+    // Prevent the click from bubbling up to the card (which would close it)
+    event.stopPropagation();
+    
+    // Proceed to auth check
+    triggerProductAction();
+}
+
+// 3. Auth Check Logic
+function triggerProductAction() {
+    if (isUserLoggedIn) {
+        alert("Product added to cart! (Virtual Action)");
+        // window.location.href = "cart.html";
+    } else {
+        console.log("User not logged in. Redirecting...");
+        window.location.href = "user_authentication.html"; 
+    }
+}
+
+// 4. Cart Icon Check
 function checkAuth(action) {
     if (isUserLoggedIn) {
         if(action === 'cart') {
@@ -28,12 +48,11 @@ function checkAuth(action) {
     }
 }
 
-// 3. Simple Scroll function for "Shop Now" button
+// 5. Helper Functions
 function scrollToProducts() {
     document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
 }
 
-// 4. Delivery Pincode Logic (Visual Only)
 function checkPincode() {
     const pin = document.getElementById('pincodeInput').value;
     if(pin.length === 6) {
