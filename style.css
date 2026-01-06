@@ -54,19 +54,7 @@ body { background-color: var(--bg-grey); color: var(--text-dark); }
 .btn-login:hover { background: var(--primary-color); }
 .icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; margin-right: 15px; color: var(--text-dark); }
 
-/* --- 3. TICKER (PROVERBS) --- */
-.ticker-wrap {
-    width: 100%; overflow: hidden; background-color: var(--primary-dark);
-    padding-left: 100%; box-sizing: border-box;
-}
-.ticker {
-    display: inline-block; height: 30px; line-height: 30px; white-space: nowrap;
-    padding-right: 100%; box-sizing: border-box; animation: ticker 25s linear infinite;
-}
-.ticker-item { display: inline-block; padding: 0 2rem; font-size: 13px; color: white; font-weight: 500; }
-@keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-
-/* --- 4. DELIVERY BAR --- */
+/* --- 3. DELIVERY BAR --- */
 .delivery-bar { 
     background: var(--primary-color); color: white;
     padding: 12px 0; font-size: 14px; text-align: center; font-weight: 500;
@@ -81,7 +69,7 @@ body { background-color: var(--bg-grey); color: var(--text-dark); }
     font-size: 12px; text-transform: uppercase; font-weight: 700;
 }
 
-/* --- 5. HERO BANNER --- */
+/* --- 4. HERO BANNER --- */
 .hero-banner { 
     background-color: var(--accent-bg); padding: 60px 0; 
     margin-bottom: 40px; text-align: center; border-radius: 0 0 50px 50px;
@@ -100,7 +88,7 @@ body { background-color: var(--bg-grey); color: var(--text-dark); }
 }
 .btn-primary:hover { transform: translateY(-3px); background: var(--primary-dark); }
 
-/* --- 6. OFFER SECTION --- */
+/* --- 5. OFFER SECTION --- */
 .offer-section { margin-bottom: 50px; }
 .offer-card { 
     background: var(--white); box-shadow: var(--shadow-soft);
@@ -118,7 +106,7 @@ body { background-color: var(--bg-grey); color: var(--text-dark); }
     display: flex; align-items: center; justify-content: center; font-size: 10px; 
 }
 
-/* --- 7. PRODUCT GRID --- */
+/* --- 6. PRODUCT GRID --- */
 .section-title { margin-bottom: 25px; font-size: 24px; font-weight: 700; text-align: center; }
 
 .product-grid {
@@ -129,108 +117,93 @@ body { background-color: var(--bg-grey); color: var(--text-dark); }
     .product-grid { grid-template-columns: repeat(4, 1fr); gap: 30px; }
 }
 
-/* --- 8. CARD STYLE --- */
-/* --- 8. UPDATED UIVERSE CARD STYLE --- */
+/* --- 7. CARD STYLE (TAP-TO-REVEAL) --- */
 .card {
     width: 100%;
-    /* We set a min-height to accommodate the pop-out button effect */
-    min-height: 300px; 
+    min-height: 300px;
     border-radius: 20px;
     background: #ffffff;
     position: relative;
     padding: 1.5rem;
-    border: 2px solid #e1e1e1; /* Light grey default border */
-    transition: 0.5s ease-out;
-    overflow: visible; /* Important: lets the button "hang" out */
+    border: 2px solid #f0f0f0; 
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden; 
+}
+
+/* Active State (When clicked) */
+.card.active {
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.15);
+    transform: translateY(-5px);
+    
+    /* VITAL MOBILE FIX: Keeps active card ON TOP of others */
+    z-index: 50; 
+    position: relative;
 }
 
 .card-details {
     color: black;
-    height: 100%;
     width: 100%;
-    gap: .5em;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     text-align: center;
+    transition: transform 0.3s ease; 
 }
 
-/* The Image inside the card */
+/* Slide content up when active */
+.card.active .card-details {
+    transform: translateY(-15px);
+}
+
 .card-img-placeholder {
     width: 100%;
-    height: 120px;
-    object-fit: contain;
-    margin-bottom: 10px;
-    /* Using mix-blend to ensure white backgrounds on images blend in */
-    mix-blend-mode: multiply; 
+    height: 140px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 15px;
+    mix-blend-mode: multiply;
 }
 
-/* Text Styles */
-.text-title {
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--text-dark);
-}
+.text-title { font-size: 1.1em; font-weight: 700; color: var(--text-dark); margin-bottom: 5px; }
+.text-body { color: var(--text-light); font-size: 0.9em; margin-bottom: 5px; }
+.text-price { font-size: 1.3em; font-weight: 800; color: var(--primary-color); }
 
-.text-body {
-    color: var(--text-light);
-    font-size: 0.9em;
-}
-
-.text-price {
-    font-size: 1.2em;
-    font-weight: 800;
-    color: var(--primary-color);
-    margin-top: 5px;
-}
-
-/* The "Pop-Up" Button */
+/* The Pop-Out Button */
 .card-button {
-    transform: translate(-50%, 125%);
-    width: 70%;
-    border-radius: 50px; /* Pill shape */
-    border: none;
-    background-color: var(--primary-color); /* Trust Blue */
-    color: #fff;
-    font-size: 1rem;
-    padding: .6rem 1rem;
     position: absolute;
+    bottom: 20px;
     left: 50%;
-    bottom: 0;
-    opacity: 0;
-    transition: 0.3s ease-out;
-    cursor: pointer;
+    transform: translate(-50%, 150%); /* Hidden initially */
+    width: 80%;
+    padding: 12px 0;
+    border-radius: 50px;
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
     font-weight: 600;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none; /* Not clickable when hidden */
 }
 
-/* HOVER EFFECTS */
-.card:hover {
-    border-color: var(--primary-color);
-    box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.15);
-}
-
-.card:hover .card-button {
-    transform: translate(-50%, 50%);
+/* Button Visible State */
+.card.active .card-button {
+    transform: translate(-50%, 0);
     opacity: 1;
+    pointer-events: auto;
 }
 
-.btn-add { 
-    width: 100%; background: var(--bg-grey); color: var(--text-dark);
-    border: none; padding: 10px; border-radius: 50px; 
-    margin-top: 15px; font-weight: 600; font-size: 13px;
-    text-transform: uppercase; transition: 0.3s;
-}
-.btn-add:hover { background: var(--primary-color); color: white; }
-
-/* --- 9. FOOTER --- */
+/* --- 8. FOOTER --- */
 footer { background: #212121; color: #999; padding: 40px 0; text-align: center; font-size: 14px; }
 
-/* --- 10. MOBILE SPECIFIC TWEAKS --- */
+/* --- 9. MOBILE TWEAKS --- */
 @media (max-width: 768px) {
     .hero-banner { padding: 40px 15px; border-radius: 0 0 30px 30px; }
     .hero-content h1 { font-size: 1.8rem; }
@@ -245,6 +218,4 @@ footer { background: #212121; color: #999; padding: 40px 0; text-align: center; 
     .delivery-bar input, .delivery-bar button { width: 100%; margin: 0; }
     
     .product-grid { gap: 10px; padding-bottom: 40px; }
-    .card-info { padding: 12px; }
-    .btn-add { font-size: 11px; }
 }
