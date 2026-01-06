@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dairy Enterprise - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container nav-flex">
+            <div class="logo">
+                <span class="logo-icon">🥛</span> SS Milk
+            </div>
+            
+            <div class="search-box">
+                <input type="text" placeholder="Search milk, curd...">
+            </div>
+
+            <div class="nav-icons">
+                <button class="icon-btn" onclick="checkAuth('cart')">🛒</button>
+                <button class="btn-login" onclick="window.location.href='login.html'">Login</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="delivery-bar">
+        <div class="container">
+            <span>🚚 Check delivery availability: </span>
+            <input type="text" placeholder="Enter Pincode" id="pincodeInput">
+            <button onclick="checkPincode()">Check</button>
+        </div>
+    </div>
+
+    <section class="hero-banner">
+        <div class="container">
+            <div class="hero-content">
+                <h1>"Nature’s white gold, delivered to your door"</h1>
+                <p>Pure Milk, Curd, and Ghee delivered every morning.</p>
+                <button class="btn-primary" onclick="scrollToProducts()">Shop Now</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="offer-section container">
+        <div class="offer-card">
+            <div class="offer-text">
+                <span class="tag">FESTIVAL OFFER</span>
+                <h2>Get 10% OFF on Ghee Bundles</h2>
+                <p>Valid until stock lasts.</p>
+            </div>
+            <div class="offer-img-placeholder">
+                Offer Image
+            </div>
+        </div>
+    </section>
+
+    <main class="container" id="products">
+        <h3 class="section-title">Fresh Arrivals</h3>
+        
+        <div class="product-grid">
+            
+            <div class="card" onclick="triggerProductAction()">
+                <div class="card-img">Product Img</div>
+                <div class="card-info">
+                    <h4>Full Cream Milk</h4>
+                    <p class="price">₹36 <span class="strike">₹40</span></p>
+                    <button class="btn-add">Add +</button>
+                </div>
+            </div>
+
+            <div class="card" onclick="triggerProductAction()">
+                <div class="card-img">Product Img</div>
+                <div class="card-info">
+                    <h4>Pot Curd</h4>
+                    <p class="price">₹45</p>
+                    <button class="btn-add">Add +</button>
+                </div>
+            </div>
+
+            <div class="card" onclick="triggerProductAction()">
+                <div class="card-img">Product Img</div>
+                <div class="card-info">
+                    <h4>Pure Ghee (500ml)</h4>
+                    <p class="price">₹350 <span class="strike">₹380</span></p>
+                    <button class="btn-add">Add +</button>
+                </div>
+            </div>
+
+            <div class="card" onclick="triggerProductAction()">
+                <div class="card-img">Product Img</div>
+                <div class="card-info">
+                    <h4>Paneer Cube</h4>
+                    <p class="price">₹120</p>
+                    <button class="btn-add">Add +</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>About Us | Contact | Settings</p>
+            <p style="font-size: 12px; color: #888; margin-top:5px;">Free delivery below 5km • Charges apply above 5km</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
