@@ -37,4 +37,28 @@ function handleLogin() {
 function handleRegister() {
     alert("Account created successfully! Please login.");
     toggleAuth('login');
+
+}
+// 3. Auth Check Logic
+function triggerProductAction() {
+    if (isUserLoggedIn) {
+        alert("Product added to cart! (Virtual Action)");
+    } else {
+        console.log("User not logged in. Redirecting...");
+        // FIXED: Now points to login.html
+        window.location.href = "login.html"; 
+    }
+}
+
+// 4. Cart Icon Check
+function checkAuth(action) {
+    if (isUserLoggedIn) {
+        if(action === 'cart') {
+            window.location.href = "add_cart_page.html";
+        }
+    } else {
+        alert("Please login to view your cart");
+        // FIXED: Now points to login.html
+        window.location.href = "login.html";
+    }
 }
