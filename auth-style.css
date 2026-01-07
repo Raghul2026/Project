@@ -1,138 +1,107 @@
-/* --- AUTH PAGE STYLES --- */
+/* --- UNIVERSAL AUTH STYLE --- */
 
 body {
-    background-color: #f0f8ff; /* Alice Blue background matches theme */
-    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100%;
+    /* Image as Background (Fixed) */
+    background: linear-gradient(rgba(0, 86, 179, 0.6), rgba(0, 86, 179, 0.8)), 
+                url('https://img.freepik.com/free-photo/fresh-milk-glass-jug-wooden-table_1150-17633.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
 }
 
 .auth-container {
-    flex-grow: 1;
+    width: 100%;
     display: flex;
-    align-items: center;
     justify-content: center;
     padding: 20px;
 }
 
-.auth-wrapper {
-    background: white;
-    width: 100%;
-    max-width: 900px;
-    min-height: 550px;
+/* The Card Size Logic */
+.auth-card {
+    background: #ffffff;
+    width: 100%;           /* Full width on small phones */
+    max-width: 420px;      /* Stops at 420px on PC (Standard size) */
+    padding: 40px 30px;
     border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-    display: flex;
-    overflow: hidden;
-}
-
-/* LEFT SIDE: IMAGE */
-.auth-image {
-    flex: 1;
-    /* Clean milk splash image */
-    background: url('https://img.freepik.com/free-photo/fresh-milk-glass-jug-wooden-table_1150-17633.jpg') no-repeat center center/cover;
-    position: relative;
-    display: none; /* Hidden on mobile */
-}
-/* Blue Overlay */
-.auth-image::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 86, 179, 0.4), rgba(0, 86, 179, 0.8));
-}
-
-.overlay-text {
-    position: absolute;
-    bottom: 40px;
-    left: 40px;
-    color: white;
-    z-index: 2;
-}
-.overlay-text h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
-.overlay-text p { font-size: 16px; opacity: 0.9; }
-
-/* RIGHT SIDE: FORM */
-.auth-form-container {
-    flex: 1;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    text-align: center;
     position: relative;
 }
 
-/* Show image only on larger screens */
-@media (min-width: 768px) {
-    .auth-image { display: block; }
-}
+/* Typography */
+h2 { margin-bottom: 5px; color: #333; font-size: 24px; }
+.subtitle { color: #777; font-size: 14px; margin-bottom: 25px; }
 
-/* FORM ELEMENTS */
-.auth-form {
-    display: none; /* Hide forms by default */
-    animation: fadeIn 0.4s ease;
-}
-.auth-form.active {
-    display: block; /* Show active form */
-}
-
-h2 { color: #333; margin-bottom: 5px; }
-.subtitle { color: #777; font-size: 14px; margin-bottom: 30px; }
-
-.input-group { margin-bottom: 20px; }
+/* Input Fields (Kept Large) */
+.input-group { margin-bottom: 15px; text-align: left; }
 .input-group label {
     display: block;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     color: #555;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
+    margin-left: 5px;
 }
 .input-group input {
     width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
+    padding: 14px 20px; /* Comfortable padding */
+    border: 2px solid #eee;
+    border-radius: 50px; 
+    font-size: 15px;
+    outline: none;
     transition: 0.3s;
 }
 .input-group input:focus {
     border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-    outline: none;
+    background: #f0f8ff;
 }
 
-.actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    margin-bottom: 25px;
-}
-.actions a { color: #007bff; text-decoration: none; font-weight: 600; }
-
+/* Button */
 .full-width {
     width: 100%;
-    padding: 12px;
-    border-radius: 8px;
+    padding: 14px;
+    border-radius: 50px;
     background-color: #007bff;
     color: white;
     border: none;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 16px;
     cursor: pointer;
-    transition: 0.3s;
+    margin-top: 10px;
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
 }
-.full-width:hover { background-color: #0056b3; }
 
+/* Link Logic */
 .switch-text {
-    text-align: center;
     margin-top: 20px;
     font-size: 14px;
     color: #666;
 }
-.switch-text span {
+.switch-text strong {
     color: #007bff;
-    font-weight: 700;
     cursor: pointer;
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+/* Navbar Logo Color Fix */
+.logo { color: white !important; font-size: 24px; font-weight: 700; }
+
+/* --- FORM SWITCHING (DISPLAY LOGIC) --- */
+.auth-form {
+    display: none; /* Hide all by default */
+}
+.auth-form.active {
+    display: block; /* Show only active */
+    animation: fadeIn 0.4s ease-in-out;
 }
 
 @keyframes fadeIn {
