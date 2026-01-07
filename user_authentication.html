@@ -9,77 +9,63 @@
 </head>
 <body>
 
-    <nav class="navbar" style="justify-content: center; box-shadow: none;">
+    <nav class="navbar" style="background: transparent; box-shadow: none; position: absolute; top: 0; width: 100%; z-index: 10;">
         <div class="logo">
             <span class="logo-icon">🥛</span> SS Milk
         </div>
     </nav>
 
     <div class="auth-container">
-        <div class="auth-wrapper">
+        
+        <div class="auth-card">
             
-            <div class="auth-image">
-                <div class="overlay-text">
-                    <h2>Freshness Guaranteed</h2>
-                    <p>Join 200+ happy families getting fresh milk daily.</p>
-                </div>
-            </div>
-
-            <div class="auth-form-container">
+            <form id="loginForm" class="auth-form active">
+                <h2>Welcome Back! 👋</h2>
+                <p class="subtitle">Fresh milk delivered daily.</p>
                 
-                <form id="loginForm" class="auth-form active">
-                    <h2>Welcome Back! 👋</h2>
-                    <p class="subtitle">Please login to continue.</p>
-                    
-                    <div class="input-group">
-                        <label>Mobile Number / Email</label>
-                        <input type="text" placeholder="Enter your details" id="loginUser" required>
-                    </div>
+                <div class="input-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="loginUser" placeholder="Enter mobile number" required>
+                </div>
 
-                    <div class="input-group">
-                        <label>Password</label>
-                        <input type="password" placeholder="••••••••" required>
-                    </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="••••••••" required>
+                </div>
 
-                    <div class="actions">
-                        <label><input type="checkbox"> Remember me</label>
-                        <a href="#">Forgot Password?</a>
-                    </div>
+                <button type="button" class="btn-primary full-width" onclick="handleLogin()">Login</button>
 
-                    <button type="button" class="btn-primary full-width" onclick="handleLogin()">Login</button>
+                <p class="switch-text">
+                    New user? <strong onclick="toggleAuth('register')">Create Account</strong>
+                </p>
+            </form>
 
-                    <p class="switch-text">
-                        New to SS Milk? <span onclick="toggleAuth('register')">Create an account</span>
-                    </p>
-                </form>
+            <form id="registerForm" class="auth-form">
+                <h2>Join SS Milk 🥛</h2>
+                <p class="subtitle">Start your healthy journey.</p>
+                
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="Your Name">
+                </div>
 
-                <form id="registerForm" class="auth-form">
-                    <h2>Create Account 🌿</h2>
-                    <p class="subtitle">Start your healthy journey today.</p>
-                    
-                    <div class="input-group">
-                        <label>Full Name</label>
-                        <input type="text" placeholder="John Doe">
-                    </div>
+                <div class="input-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" placeholder="Enter mobile number">
+                </div>
 
-                    <div class="input-group">
-                        <label>Mobile Number</label>
-                        <input type="tel" placeholder="98765 43210">
-                    </div>
+                <div class="input-group">
+                    <label>Set Password</label>
+                    <input type="password" placeholder="Create password">
+                </div>
 
-                    <div class="input-group">
-                        <label>Password</label>
-                        <input type="password" placeholder="Create a strong password">
-                    </div>
+                <button type="button" class="btn-primary full-width" onclick="handleRegister()">Sign Up</button>
 
-                    <button type="button" class="btn-primary full-width" onclick="handleRegister()">Sign Up</button>
+                <p class="switch-text">
+                    Has account? <strong onclick="toggleAuth('login')">Login here</strong>
+                </p>
+            </form>
 
-                    <p class="switch-text">
-                        Already have an account? <span onclick="toggleAuth('login')">Login here</span>
-                    </p>
-                </form>
-
-            </div>
         </div>
     </div>
 
