@@ -1,64 +1,37 @@
-// script.js
+// 1. Toggle Function (Fixed Logic)
+function toggleAuth(formType) {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
 
-// 1. Check if user is ALREADY logged in from a previous session
-// We check the LocalStorage key 'isLoggedIn'
-let isUserLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-// 2. Logic for clicking the Card (Tap to Reveal)
-function toggleCard(clickedCard) {
-    const isActive = clickedCard.classList.contains('active');
-    const allCards = document.querySelectorAll('.card');
-    
-    // Close other cards
-    allCards.forEach(card => card.classList.remove('active'));
-
-    // Toggle current card
-    if (!isActive) {
-        clickedCard.classList.add('active');
+    if (formType === 'register') {
+        // Hide Login, Show Register
+        loginForm.classList.remove('active');
+        registerForm.classList.add('active');
+    } else {
+        // Hide Register, Show Login
+        registerForm.classList.remove('active');
+        loginForm.classList.add('active');
     }
 }
 
-// 3. Logic for clicking the "Add to Cart" Button
-function addToCart(event) {
-    event.stopPropagation(); // Stop card from toggling
-    triggerProductAction();  // Check auth
-}
+// 2. Login Logic
+function handleLogin() {
+    const user = document.getElementById('loginUser').value;
 
-// 4. Auth Check Logic
-function triggerProductAction() {
-    if (isUserLoggedIn) {
-        // If logged in, go to Cart Page directly
+    if(user) {
+        alert(`Login Successful! Welcome, ${user}`);
+        localStorage.setItem('isLoggedIn', 'true');
+        
+        // Redirect to Cart Page
         window.location.href = "add_cart_page.html"; 
     } else {
-        console.log("User not logged in. Redirecting to auth screen...");
-        // FIXED: Links to your existing file
-        window.location.href = "user_authentication.html"; 
+        alert("Please enter your Mobile Number.");
     }
 }
 
-// 5. Cart Icon Check
-function checkAuth(action) {
-    if (isUserLoggedIn) {
-        if(action === 'cart') {
-            window.location.href = "add_cart_page.html";
-        }
-    } else {
-        alert("Please login to view your cart");
-        // FIXED: Links to your existing file
-        window.location.href = "user_authentication.html";
-    }
-}
-
-// 6. Helper Functions (Scroll & Pincode)
-function scrollToProducts() {
-    document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
-}
-
-function checkPincode() {
-    const pin = document.getElementById('pincodeInput').value;
-    if(pin.length === 6) {
-        alert("We deliver to " + pin + "! Login to check delivery charges.");
-    } else {
-        alert("Please enter a valid 6-digit pincode.");
-    }
+// 3. Register Logic
+function handleRegister() {
+    alert("Account created successfully! Please login.");
+    // Auto-switch back to login after signup
+    toggleAuth('login');
 }
