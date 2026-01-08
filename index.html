@@ -14,56 +14,58 @@
                 <span class="logo-icon">🥛</span> SS Milk
             </div>
             
-            <div class="search-box">
-                <input type="text" placeholder="Search milk, curd...">
-            </div>
-
             <div class="nav-icons">
-                <button class="icon-btn" onclick="checkAuth('cart')">🛒</button>
-                <button class="btn-login" onclick="window.location.href='user_authentication.html'">Login</button>
+                <button class="icon-btn" onclick="checkAuth('cart')">
+                    🛒 <span id="cart-badge" class="badge hidden">0</span>
+                </button>
+
+                <button id="btn-login" class="btn-login" onclick="window.location.href='user_authentication.html'">Login</button>
+
+                <div id="nav-profile" class="profile-menu hidden" onclick="logout()" style="cursor: pointer;" title="Tap to Logout">
+                    <span class="user-name" id="display-name">Member</span>
+                    <button class="icon-btn profile-btn">👤</button>
+                </div>
             </div>
         </div>
     </header>
 
     <div class="delivery-bar">
-        <div class="container">
-            <span>🚚 Check delivery availability: </span>
-            <input type="text" placeholder="Enter Pincode" id="pincodeInput">
-            <button onclick="checkPincode()">Check</button>
+        <div class="container search-container">
+            <input type="text" class="main-search" placeholder="Search for milk, curd, ghee...">
+            <button class="search-btn">🔍</button>
         </div>
     </div>
 
     <section class="hero-banner">
         <div class="container">
             <div class="hero-content">
-                <h1>"Nature’s white gold, delivered to your door"</h1>
+                <h1 id="hero-title">"Nature’s white gold, delivered."</h1>
                 <p>Pure Milk, Curd, and Ghee delivered every morning.</p>
                 <button class="btn-primary" onclick="scrollToProducts()">Shop Now</button>
             </div>
         </div>
     </section>
 
-    <section class="offer-section container">
+    <section id="offer-section" class="offer-section container">
         <div class="offer-card">
             <div class="offer-text">
                 <span class="tag">FESTIVAL OFFER</span>
                 <h2>Get 10% OFF on Ghee Bundles</h2>
-                <p>Valid until stock lasts.</p>
+                <p>Login to claim this offer.</p>
             </div>
             <div class="offer-img-placeholder">
-                Offer Image
+                10% OFF
             </div>
         </div>
     </section>
 
     <main class="container" id="products">
-        <h3 class="section-title">Fresh Arrivals</h3>
+        <h3 class="section-title" id="grid-title">Fresh Arrivals</h3>
         
-        <div class="product-grid">
+        <div class="product-grid" id="product-list">
             
             <div class="card" onclick="toggleCard(this)">
                 <div class="card-details">
-                    <p class="text-title">Full Cream Milk</p>
                     <p class="text-body">500ml Pouch</p>
                     <p class="text-price">₹36</p>
                 </div>
@@ -103,11 +105,10 @@
     <footer>
         <div class="container">
             <p>About Us | Contact | Settings</p>
-            <p style="font-size: 12px; color: #888; margin-top:5px;">Free delivery below 5km • Charges apply above 5km</p>
+            <p style="font-size: 12px; color: #666; margin-top:5px;">Free delivery below 5km • Charges apply above 5km</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
 </body>
 </html>
-
