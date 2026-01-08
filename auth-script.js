@@ -1,14 +1,12 @@
-// 1. Toggle Function (Fixed Logic)
+// 1. Toggle Function
 function toggleAuth(formType) {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
 
     if (formType === 'register') {
-        // Hide Login, Show Register
         loginForm.classList.remove('active');
         registerForm.classList.add('active');
     } else {
-        // Hide Register, Show Login
         registerForm.classList.remove('active');
         loginForm.classList.add('active');
     }
@@ -19,11 +17,14 @@ function handleLogin() {
     const user = document.getElementById('loginUser').value;
 
     if(user) {
-        alert(`Login Successful! Welcome, ${user}`);
+        // Save Login State
         localStorage.setItem('isLoggedIn', 'true');
         
-        // Redirect to Cart Page
-        window.location.href = "add_cart_page.html"; 
+        // Optional: Keep this one so they know it worked, or remove it too if you want silent login
+        alert(`Login Successful! Welcome, ${user}`);
+        
+        // Redirect back to Home Page
+        window.location.href = "index.html"; 
     } else {
         alert("Please enter your Mobile Number.");
     }
@@ -32,6 +33,5 @@ function handleLogin() {
 // 3. Register Logic
 function handleRegister() {
     alert("Account created successfully! Please login.");
-    // Auto-switch back to login after signup
     toggleAuth('login');
 }
