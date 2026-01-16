@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart - SS Milk</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cart-style.css">
+</head>
+<body>
+
+    <div class="cart-header">
+        <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+        <h2>Your Cart</h2>
+        <div style="width: 24px;"></div> </div>
+
+    <div class="container cart-container" id="cart-items">
+        <p class="empty-msg">Your cart is empty 😔</p>
+    </div>
+
+    <div class="bill-section hidden" id="bill-details">
+        <h3>Bill Details</h3>
+        <div class="bill-row">
+            <span>Item Total</span>
+            <span>₹<span id="item-total">0</span></span>
+        </div>
+        <div class="bill-row">
+            <span>Delivery Fee</span>
+            <span class="free-tag">FREE</span>
+        </div>
+        <div class="divider"></div>
+        <div class="bill-row total">
+            <span>To Pay</span>
+            <span>₹<span id="grand-total">0</span></span>
+        </div>
+    </div>
+
+    <div class="bottom-bar hidden" id="bottom-bar">
+        <button class="btn-primary full-width" onclick="placeOrder()">Place Order</button>
+    </div>
+
+    <script src="cart-script.js"></script>
+</body>
+</html>

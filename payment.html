@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Payment - SS Milk</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="payment-style.css">
+</head>
+<body>
+
+    <div class="cart-header">
+        <button class="back-btn" onclick="window.history.back()">←</button>
+        <h2>Select Payment</h2>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="container">
+        
+        <div class="pay-amount-card">
+            <p>Amount to Pay</p>
+            <h1>₹<span id="pay-display">0</span></h1>
+        </div>
+
+        <h3>UPI Payments</h3>
+        <div class="payment-list">
+            
+            <label class="payment-option">
+                <div class="pay-left">
+                    <span class="pay-icon">🔵</span> <span>Google Pay</span>
+                </div>
+                <input type="radio" name="payment" value="gpay">
+            </label>
+
+            <label class="payment-option">
+                <div class="pay-left">
+                    <span class="pay-icon">🟣</span> <span>PhonePe</span>
+                </div>
+                <input type="radio" name="payment" value="phonepe">
+            </label>
+
+            <label class="payment-option">
+                <div class="pay-left">
+                    <span class="pay-icon">⚪</span> <span>Paytm UPI</span>
+                </div>
+                <input type="radio" name="payment" value="paytm">
+            </label>
+
+        </div>
+
+        <h3>Other Options</h3>
+        <div class="payment-list">
+            <label class="payment-option">
+                <div class="pay-left">
+                    <span class="pay-icon">💵</span>
+                    <span>Cash on Delivery</span>
+                </div>
+                <input type="radio" name="payment" value="cod">
+            </label>
+        </div>
+
+    </div>
+
+    <div class="bottom-bar">
+        <button class="btn-primary full-width" onclick="confirmOrder()">Pay Now</button>
+    </div>
+
+    <script src="payment-script.js"></script>
+</body>
+</html>

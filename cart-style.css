@@ -1,0 +1,53 @@
+/* --- CART SPECIFIC STYLES --- */
+body { background: #f4f6f8; padding-bottom: 80px; }
+
+/* Header */
+.cart-header {
+    background: white; padding: 15px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    position: sticky; top: 0; z-index: 100;
+}
+.cart-header h2 { font-size: 18px; margin: 0; }
+.back-btn { background: none; border: none; font-size: 24px; cursor: pointer; }
+
+/* Item Card */
+.cart-item {
+    background: white; padding: 15px; margin-top: 15px;
+    border-radius: 15px; display: flex; align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.item-left { display: flex; align-items: center; gap: 15px; }
+.item-icon { font-size: 30px; }
+.item-info h4 { margin: 0; font-size: 14px; color: #333; }
+.item-info p { margin: 2px 0 0; font-size: 12px; color: #777; }
+.item-price { font-weight: 700; color: #007bff; font-size: 15px; margin-top: 5px; }
+
+/* Delete Button */
+.btn-remove {
+    background: #ffe5e5; color: red; border: none;
+    width: 30px; height: 30px; border-radius: 50%;
+    cursor: pointer; font-weight: bold; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* Bill Details */
+.bill-section {
+    background: white; padding: 20px; margin: 20px 0;
+    border-radius: 15px;
+}
+.bill-section h3 { font-size: 16px; margin-bottom: 15px; }
+.bill-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: #555; }
+.free-tag { color: green; font-weight: bold; }
+.divider { border-top: 1px dashed #ddd; margin: 10px 0; }
+.total { font-weight: 700; color: #000; font-size: 18px; }
+
+/* Sticky Footer */
+.bottom-bar {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: white; padding: 15px 20px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+}
+.empty-msg { text-align: center; margin-top: 50px; color: #999; }
