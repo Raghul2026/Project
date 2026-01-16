@@ -163,14 +163,90 @@ function updatePrice(selectElement, basePrice) {
 }
 
 // 7. CART / AUTH ACTIONS
+// [KEEP YOUR EXISTING DATA & LOGIN LOGIC AT THE TOP]
+// ... (products array, isUserLoggedIn, window.onload etc.) ...
+
+// [REPLACE YOUR addToCart and checkAuth FUNCTIONS WITH THESE]
+
+// 1. ADD TO CART (Now saves to memory)
 function addToCart(event, productId) {
-    event.stopPropagation(); // Don't trigger the card click
-    alert("Added item " + productId + " to cart!");
+    event.stopPropagation(); // Stop animation from closing
+
+    if (!isUserLoggedIn) {
+        alert("Please Login to shop!");
+        window.location.href = "user_authentication.html";
+        return;
+    }
+
+    // 1. Find the product in our "Database"
+    const product = products.find(p => p.id === productId);
+
+    // 2. Find what size the user selected (e.g., 500ml or 1 Liter)
+    // We look inside the HTML card that was clicked
+    const cardButton = event.target;
+    const card = cardButton.closest('.card'); 
+    const selectBox = card.querySelector('.qty-select');
+    
+    let multiplier = 1;
+    let sizeLabel = product.unit;
+
+    if (selectBox) {
+        multiplier = parseFloat(selectBox.value);
+        sizeLabel = selectBox.options[selectBox.selectedIndex].text;
+    }
+
+    // 3. Calculate Final Price based on size
+    const finalPrice = Math.round(product.price * multiplier);
+
+    // 4. Create the Item Object
+    const itemToAdd = {
+        id: Date.now(), // Unique ID for every item added
+        productId: product.id,
+        name: product.name,
+        icon: product.icon,
+        price: finalPrice,
+        size: sizeLabel,
+        qty: 1
+    };
+
+    // 5. Save to Local Storage
+    let cart = JSON.parse(localStorage.getItem('myCart')) || [];
+    cart.push(itemToAdd);
+    localStorage.setItem('myCart', JSON.stringify(cart));
+
+    // 6. Update UI
+    updateCartBadge();
+    alert(`Added ${sizeLabel} of ${product.name} to Cart!`);
 }
 
-function checkAuth(event) {
-    if(event) event.stopPropagation();
-    window.location.href = "user_authentication.html";
+// 2. UPDATE RED BADGE (Shows number of items)
+function updateCartBadge() {
+    const badge = document.getElementById('cart-badge');
+    let cart = JSON.parse(localStorage.getItem('myCart')) || [];
+    
+    if(cart.length > 0) {
+        badge.innerText = cart.length;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+// Call this when page loads to show current count
+const originalOnLoad = window.onload;
+window.onload = function() {
+    if(originalOnLoad) originalOnLoad();
+    updateCartBadge();
+};
+
+// 3. CART NAVIGATION
+function checkAuth(action) {
+    if (isUserLoggedIn) {
+        window.location.href = "add_cart_page.html";
+    } else {
+        alert("Please login first.");
+        window.location.href = "user_authentication.html";
+    }
 }
 
 function logout() {
