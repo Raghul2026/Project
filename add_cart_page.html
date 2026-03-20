@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Cart – SS Milk</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+    /* ══════════ VARIABLES & BASE ══════════ */
+    :root {
+      --primary: #007bff;
+      --primary-dark: #0056b3;
+      --green: #0FBA81;
+      --danger: #dc3545;
+      --bg-color: #f8f9fa;
+      --text-main: #2c2e3e;
+      --muted: #7a7a7a;
+      --border: #eaedf1;
+      --white: #ffffff;
+    }
+
+    body { background: var(--bg-color); color: var(--text-main); font-family: 'Poppins', sans-serif; margin: 0; padding: 0; padding-bottom: 120px; }
+    .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+    .hidden { display: none !important; }
+
+    /* ══════════ HEADER & PROGRESS ══════════ */
+    .cart-header { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.03); position: sticky; top: 0; z-index: 100; }
+    .back-btn, .clear-btn { background: none; border: none; font-size: 20px; color: var(--text-main); cursor: pointer; }
+    .clear-btn { color: var(--danger); font-size: 18px; }
+    .cart-header-center { text-align: center; }
+    .cart-title { margin: 0; font-size: 18px; font-weight: 700; }
+    .cart-count-label { font-size: 12px; color: var(--muted); }
+
+    .progress-steps { display: flex; align-items: center; justify-content: center; padding: 15px; background: var(--white); margin-bottom: 15px; border-bottom: 1px solid var(--border); }
+    .step { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .step-circle { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; background: #eee; color: #999; }
+    .step-circle.active { background: var(--primary); color: white; box-shadow: 0 0 0 4px rgba(0,123,255,0.2); }
+    .step-label { font-size: 11px; font-weight: 600; color: var(--muted); }
+    .step.active .step-label { color: var(--primary); }
+    .step-line { height: 2px; width: 40px; background: #eee; margin: 0 10px; transform: translateY(-10px); }
+
+    /* ══════════ EMPTY STATE ══════════ */
+    .cart-empty { text-align: center; padding: 60px 20px; }
+    .empty-anim { font-size: 60px; margin-bottom: 15px; opacity: 0.5; }
+    .empty-title { font-size: 20px; margin: 0 0 5px; }
+    .empty-sub { color: var(--muted); font-size: 14px; margin-bottom: 25px; }
+
+    /* ══════════ CART ITEMS ══════════ */
+    .cart-item { background: var(--white); border-radius: 16px; padding: 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+    .item-left { display: flex; align-items: center; gap: 15px; }
+    .item-icon { font-size: 30px; background: #e3f2fd; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; }
+    .item-info h4 { margin: 0 0 3px; font-size: 15px; }
+    .item-info p { margin: 0; font-size: 12px; color: var(--muted); }
+    .item-price { font-weight: 700; color: var(--primary); font-size: 15px; margin-top: 5px; }
+
+    .item-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    .qty-control { display: flex; align-items: center; background: #f8f9fa; border-radius: 8px; border: 1px solid #eee; }
+    .qty-btn { background: none; border: none; width: 28px; height: 28px; font-size: 16px; font-weight: bold; color: var(--primary); cursor: pointer; }
+    .qty-display { width: 24px; text-align: center; font-size: 13px; font-weight: 600; }
+    .item-remove { font-size: 12px; color: var(--danger); background: none; border: none; cursor: pointer; text-decoration: underline; }
+
+    /* ══════════ CARDS (Offer, Bill, Address, Schedule) ══════════ */
+    .offer-banner { background: #e3f2fd; color: var(--primary-dark); padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
+    .offer-code-box, .bill-card, .address-card, .schedule-card, .notes-card { background: var(--white); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+
+    .offer-code-header, .bill-title, .address-title, .schedule-title, .notes-title { font-size: 14px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+    .offer-code-input-row { display: flex; gap: 10px; }
+    .form-control { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; font-family: inherit; box-sizing: border-box;}
+    .form-control:focus { border-color: var(--primary); }
+    .form-label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--muted); }
+    .offer-result { margin-top: 10px; font-size: 12px; font-weight: 600; }
+
+    /* Bill Details */
+    .bill-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13px; color: var(--muted); }
+    .bill-value { font-weight: 600; color: var(--text-main); }
+    .bill-value.free { color: var(--green); }
+    .bill-value.discount { color: var(--green); }
+    .bill-divider { border-top: 1px dashed var(--border); margin: 15px 0; }
+    .total-row { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 0; }
+    .bill-savings { background: #e6faf4; color: #0FBA81; padding: 10px; border-radius: 8px; font-size: 12px; margin-top: 15px; display: flex; align-items: center; gap: 5px; }
+
+    /* Address Area */
+    .address-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .no-address { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px 0; text-align: center; font-size: 13px; color: var(--muted); }
+    .address-filled { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; position: relative; }
+    .address-text { font-size: 13px; line-height: 1.5; color: var(--text-main); margin-bottom: 5px; }
+    .address-tag { font-size: 10px; background: #e3f2fd; color: var(--primary); display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+
+    /* ══════════ BUTTONS & BOTTOM BAR ══════════ */
+    .btn { border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; }
+    .btn-primary { background: var(--primary); color: white; padding: 12px 20px; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 8px 15px; }
+    .btn-danger { background: var(--danger); color: white; padding: 12px 20px; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn-lg { padding: 14px 24px; font-size: 15px; }
+    .btn-full { width: 100%; padding: 14px; margin-top: 10px;}
+
+    .bottom-checkout-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--white); padding: 15px 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; z-index: 100; border-top: 1px solid var(--border); box-sizing: border-box; }
+    .checkout-summary { display: flex; flex-direction: column; }
+    .checkout-items { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+    .checkout-total { font-size: 20px; font-weight: 800; color: var(--text-main); }
+    .checkout-btn { display: flex; align-items: center; gap: 8px; border-radius: 12px; font-size: 15px; }
+
+    /* ══════════ MODALS ══════════ */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; padding: 20px; box-sizing: border-box; }
+    .modal-overlay.show { opacity: 1; pointer-events: auto; }
+    .modal { background: var(--white); width: 100%; max-width: 400px; border-radius: 20px; transform: translateY(20px); transition: 0.3s; overflow: hidden; margin: 0 auto;}
+    .modal-overlay.show .modal { transform: translateY(0); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); background: #fafafa; }
+    .modal-title { font-weight: 700; font-size: 15px; }
+    .modal-close { background: none; border: none; font-size: 24px; color: var(--muted); cursor: pointer; line-height: 1; }
+    .modal-body { padding: 20px; }
+    .form-group { margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+
+<header class="cart-header">
+  <button class="back-btn" onclick="window.location.href='index.html'">
+    <i class="fa-solid fa-arrow-left"></i>
+  </button>
+  <div class="cart-header-center">
+    <h1 class="cart-title">My Cart</h1>
+    <span class="cart-count-label" id="cart-count-label">0 items</span>
+  </div>
+  <button class="clear-btn" id="clear-cart-btn" onclick="confirmClearCart()">
+    <i class="fa-solid fa-trash"></i>
+  </button>
+</header>
+
+<div class="progress-steps">
+  <div class="step active"><div class="step-circle active"><i class="fa-solid fa-cart-shopping"></i></div><span class="step-label">Cart</span></div>
+  <div class="step-line"></div>
+  <div class="step"><div class="step-circle"><i class="fa-solid fa-location-dot"></i></div><span class="step-label">Address</span></div>
+  <div class="step-line"></div>
+  <div class="step"><div class="step-circle"><i class="fa-solid fa-credit-card"></i></div><span class="step-label">Payment</span></div>
+</div>
+
+<main class="cart-main container">
+
+  <div class="cart-empty hidden" id="cart-empty">
+    <div class="empty-anim">🛒</div>
+    <h2 class="empty-title">Your cart is empty</h2>
+    <p class="empty-sub">Add fresh dairy products to get started!</p>
+    <button class="btn btn-primary btn-lg" onclick="window.location.href='index.html'"><i class="fa-solid fa-basket-shopping"></i> Browse Products</button>
+  </div>
+
+  <div id="cart-content">
+
+    <div class="offer-banner" id="offer-banner">
+      <i class="fa-solid fa-tag"></i><span>Have an offer code? Apply below to save!</span>
+    </div>
+
+    <div class="cart-items-list" id="cart-items-list"></div>
+
+    <div class="offer-code-box">
+      <div class="offer-code-header"><i class="fa-solid fa-ticket"></i><span>Apply Offer Code</span></div>
+      <div class="offer-code-input-row">
+        <input type="text" id="offer-code-input" class="form-control" placeholder="Enter code e.g. FEST10" style="text-transform:uppercase;letter-spacing:1px">
+        <button class="btn btn-primary" id="apply-offer-btn" onclick="applyOfferCode()">Apply</button>
+      </div>
+      <div class="offer-result hidden" id="offer-result"></div>
+    </div>
+
+    <div class="bill-card" id="bill-card">
+      <div class="bill-title"><i class="fa-solid fa-receipt"></i> Bill Details</div>
+      <div class="bill-row"><span class="bill-label">Item Total</span><span class="bill-value" id="item-total">₹0.00</span></div>
+      <div class="bill-row"><span class="bill-label">Delivery Fee</span><span class="bill-value free" id="delivery-fee">FREE</span></div>
+      <div class="bill-row discount-row hidden" id="discount-row">
+        <span class="bill-label"><i class="fa-solid fa-tag" style="color:var(--green);font-size:11px"></i> Offer Discount</span>
+        <span class="bill-value discount" id="discount-val">-₹0.00</span>
+      </div>
+      <div class="bill-divider"></div>
+      <div class="bill-row total-row"><span class="bill-total-label">To Pay</span><span class="bill-total-val" id="grand-total">₹0.00</span></div>
+      <div class="bill-savings hidden" id="bill-savings"><i class="fa-solid fa-circle-check"></i> You're saving <strong id="savings-amount">₹0</strong> on this order!</div>
+    </div>
+
+    <div class="address-card" id="address-card">
+      <div class="address-header">
+        <div class="address-title"><i class="fa-solid fa-location-dot" style="color:var(--primary)"></i> Delivery Address</div>
+        <button class="btn btn-sm btn-outline" onclick="openAddressModal()"><i class="fa-solid fa-pen"></i> Change</button>
+      </div>
+      <div id="address-display">
+        <div class="no-address" id="no-address">
+          <i class="fa-solid fa-location-crosshairs" style="font-size: 20px;"></i>
+          <span>No address set. Please add your delivery address.</span>
+          <button class="btn btn-sm btn-primary" onclick="openAddressModal()">Add Address</button>
+        </div>
+        <div class="address-filled hidden" id="address-filled">
+          <div class="address-text" id="address-text"></div>
+          <div class="address-tag"><i class="fa-solid fa-house"></i> Home</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="schedule-card">
+      <div class="schedule-title"><i class="fa-solid fa-calendar-days"></i> Schedule Delivery (Optional)</div>
+      <div style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex:1"><label class="form-label">Date</label><input type="date" id="sched-date" class="form-control"></div>
+        <div class="form-group" style="flex:1">
+          <label class="form-label">Time Slot</label>
+          <select id="sched-time" class="form-control">
+            <option value="">Any time</option><option value="5AM-7AM">5AM – 7AM</option><option value="7AM-9AM">7AM – 9AM</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes-card">
+      <div class="notes-title"><i class="fa-solid fa-note-sticky"></i> Order Notes (Optional)</div>
+      <textarea id="order-notes" class="form-control" placeholder="Any special instructions for delivery?" rows="2"></textarea>
+    </div>
+
+  </div>
+</main>
+
+<div class="bottom-checkout-bar" id="bottom-checkout-bar">
+  <div class="checkout-summary">
+    <div class="checkout-items" id="checkout-items-count">0 items</div>
+    <div class="checkout-total" id="checkout-total">₹0.00</div>
+  </div>
+  <button class="btn btn-primary checkout-btn" id="checkout-btn" onclick="proceedToPayment()">
+    Proceed to Payment <i class="fa-solid fa-arrow-right"></i>
+  </button>
+</div>
+
+<div class="modal-overlay" id="address-modal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">📍 Delivery Address</span><button class="modal-close" onclick="closeModal('address-modal')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Full Address</label><textarea id="addr-full" class="form-control" placeholder="House No., Street, Area…" rows="3"></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group"><label class="form-label">City</label><input type="text" id="addr-city" class="form-control" value="Coimbatore"></div>
+        <div class="form-group"><label class="form-label">Pincode</label><input type="text" id="addr-pin" class="form-control" placeholder="641001"></div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="saveAddress()"><i class="fa-solid fa-floppy-disk"></i> Save Address</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="clear-confirm-modal">
+  <div class="modal" style="max-width:300px;">
+    <div class="modal-body" style="text-align:center;">
+      <div style="font-size:44px;margin-bottom:14px">🗑️</div>
+      <div style="font-size:17px;font-weight:800;margin-bottom:8px">Clear Cart?</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:24px">All items will be removed.</div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline" style="flex:1" onclick="closeModal('clear-confirm-modal')">Cancel</button>
+        <button class="btn btn-danger" style="flex:1" onclick="clearCartConfirmed()">Clear All</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    let discountAmount = 0;
+    let finalAmount = 0;
+
+    window.onload = function() {
+        // Restrict date picker to today onwards
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('sched-date').setAttribute('min', today);
+        
+        loadCart();
+        loadAddress();
+    };
+
+    function loadCart() {
+        let cart = JSON.parse(localStorage.getItem('myCart')) || [];
+        const emptyState = document.getElementById('cart-empty');
+        const cartContent = document.getElementById('cart-content');
+        const bottomBar = document.getElementById('bottom-checkout-bar');
+        const itemsList = document.getElementById('cart-items-list');
+        
+        itemsList.innerHTML = ""; 
+
+        if (cart.length === 0) {
+            emptyState.classList.remove('hidden');
+            cartContent.classList.add('hidden');
+            bottomBar.classList.add('hidden');
+            document.getElementById('cart-count-label').innerText = "0 items";
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        cartContent.classList.remove('hidden');
+        bottomBar.classList.remove('hidden');
+
+        let totalItems = 0;
+        let itemTotalAmount = 0;
+
+        cart.forEach((item, index) => {
+            const itemQty = item.qty || 1;
+            const itemPriceTotal = item.price * itemQty;
+            totalItems += itemQty;
+            itemTotalAmount += itemPriceTotal;
+
+            itemsList.innerHTML += `
+                <div class="cart-item">
+                    <div class="item-left">
+                        <div class="item-icon">${item.icon}</div>
+                        <div class="item-info">
+                            <h4>${item.name}</h4>
+                            <p>${item.size}</p>
+                            <div class="item-price">₹${itemPriceTotal}</div>
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+                            <div class="qty-display">${itemQty}</div>
+                            <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+                        </div>
+                        <button class="item-remove" onclick="removeItem(${index})">Remove</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById('cart-count-label').innerText = `${totalItems} items`;
+        document.getElementById('checkout-items-count').innerText = `${totalItems} items`;
+        calculateBill(itemTotalAmount);
+    }
+
+    function updateQty(index, change) {
+        let cart = JSON.parse(localStorage.getItem('myCart'));
+        cart[index].qty = (cart[index].qty || 1) + change;
+        if (cart[index].qty <= 0) cart.splice(index, 1);
+        localStorage.setItem('myCart', JSON.stringify(cart));
+        loadCart();
+    }
+
+    function removeItem(index) {
+        let cart = JSON.parse(localStorage.getItem('myCart'));
+        cart.splice(index, 1);
+        localStorage.setItem('myCart', JSON.stringify(cart));
+        loadCart();
+    }
+
+    // MODAL HELPERS
+    function confirmClearCart() { document.getElementById('clear-confirm-modal').classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+    function clearCartConfirmed() {
+        localStorage.removeItem('myCart');
+        closeModal('clear-confirm-modal');
+        loadCart();
+    }
+
+    function openAddressModal() { document.getElementById('address-modal').classList.add('show'); }
+
+    // OFFER CODE
+    function applyOfferCode() {
+        const code = document.getElementById('offer-code-input').value.toUpperCase();
+        const resultDiv = document.getElementById('offer-result');
+        
+        if(code === "FEST10") {
+            discountAmount = 20;
+            resultDiv.innerText = "Code applied successfully! ₹20 OFF";
+            resultDiv.style.color = "#0FBA81";
+        } else {
+            discountAmount = 0;
+            resultDiv.innerText = "Invalid or expired code.";
+            resultDiv.style.color = "#dc3545";
+        }
+        resultDiv.classList.remove('hidden');
+        loadCart(); 
+    }
+
+    function calculateBill(itemTotal) {
+        document.getElementById('item-total').innerText = `₹${itemTotal}`;
+        
+        if (discountAmount > 0) {
+            document.getElementById('discount-row').classList.remove('hidden');
+            document.getElementById('discount-val').innerText = `-₹${discountAmount}`;
+            document.getElementById('bill-savings').classList.remove('hidden');
+            document.getElementById('savings-amount').innerText = `₹${discountAmount}`;
+        } else {
+            document.getElementById('discount-row').classList.add('hidden');
+            document.getElementById('bill-savings').classList.add('hidden');
+        }
+
+        finalAmount = itemTotal - discountAmount;
+        if(finalAmount < 0) finalAmount = 0;
+
+        document.getElementById('grand-total').innerText = `₹${finalAmount}`;
+        document.getElementById('checkout-total').innerText = `₹${finalAmount}`;
+    }
+
+    // ADDRESS MANAGEMENT
+    function saveAddress() {
+        const full = document.getElementById('addr-full').value;
+        const city = document.getElementById('addr-city').value;
+        const pin = document.getElementById('addr-pin').value;
+
+        if(!full || !pin) { alert("Please fill in your Full Address and Pincode."); return; }
+
+        const addressString = `${full}, ${city} - ${pin}`;
+        localStorage.setItem('deliveryAddress', addressString);
+        
+        closeModal('address-modal');
+        loadAddress();
+    }
+
+    function loadAddress() {
+        const saved = localStorage.getItem('deliveryAddress');
+        if (saved) {
+            document.getElementById('no-address').classList.add('hidden');
+            document.getElementById('address-filled').classList.remove('hidden');
+            document.getElementById('address-text').innerText = saved;
+        } else {
+            document.getElementById('no-address').classList.remove('hidden');
+            document.getElementById('address-filled').classList.add('hidden');
+        }
+    }
+
+    // PROCEED TO PAYMENT
+    function proceedToPayment() {
+        const savedAddress = localStorage.getItem('deliveryAddress');
+        if (!savedAddress) {
+            alert("Please add a delivery address before proceeding.");
+            document.getElementById('address-card').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        localStorage.setItem('finalAmount', finalAmount);
+        
+        const notes = document.getElementById('order-notes').value;
+        if(notes) localStorage.setItem('orderNotes', notes);
+
+        // This links to your beautifully styled payment file!
+        window.location.href = "payment.html"; 
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – SS Milk</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: #007bff; --primary-dark: #0056b3; --green: #0FBA81; --danger: #dc3545;
+      --bg-color: #f4f6f8; --text-main: #2c2e3e; --muted: #7a7a7a; --border: #eaedf1; --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+    .hidden { display: none !important; }
+
+    /* Buttons */
+    .btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit;}
+    .btn-primary { background: var(--primary); color: var(--white); }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+    .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+    .btn-outline:hover { background: #f8f9fa; }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+    .btn-lg { padding: 14px 20px; font-size: 16px; }
+    .btn-full { width: 100%; }
+
+    /* Nav */
+    .auth-nav { display: flex; justify-content: space-between; padding: 20px; background: transparent; position: absolute; top: 0; width: 100%; z-index: 10; }
+    .auth-logo { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 800; color: var(--text-main); text-decoration: none; }
+    .auth-logo-emoji { font-size: 24px; }
+
+    /* Wrapper */
+    .auth-bg { flex: 1; display: flex; align-items: center; justify-content: center; padding: 80px 20px 20px; }
+    .auth-wrapper { display: flex; background: var(--white); border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); overflow: hidden; max-width: 900px; width: 100%; min-height: 600px; }
+
+    /* Left Panel */
+    .auth-left { flex: 1; background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 40px; display: flex; flex-direction: column; justify-content: center; position: relative; }
+    .auth-left-emoji { font-size: 60px; margin-bottom: 20px; }
+    .auth-left-title { font-size: 32px; font-weight: 800; line-height: 1.2; margin-bottom: 15px; }
+    .auth-left-sub { font-size: 15px; opacity: 0.9; margin-bottom: 40px; line-height: 1.6; }
+    .auth-feature { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; font-weight: 500; }
+    .auth-feature-icon { background: rgba(255,255,255,0.2); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 12px; }
+
+    /* Right Panel (Form) */
+    .auth-right { flex: 1; padding: 40px; display: flex; flex-direction: column; width: 100%; max-width: 450px; margin: 0 auto; }
+    
+    .auth-tabs { display: flex; background: #f0f4f8; padding: 5px; border-radius: 12px; margin-bottom: 30px; }
+    .auth-tab { flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; color: var(--muted); border: none; background: transparent; transition: 0.3s; }
+    .auth-tab.active { background: var(--white); color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+
+    .auth-form-header { margin-bottom: 25px; }
+    .auth-form-title { font-size: 24px; font-weight: 800; margin-bottom: 5px; }
+    .auth-form-sub { font-size: 13px; color: var(--muted); }
+
+    /* Form Inputs */
+    .form-group { margin-bottom: 20px; }
+    .label-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
+    .input-icon-wrap { position: relative; display: flex; align-items: center; }
+    .input-icon { position: absolute; left: 15px; color: var(--muted); font-size: 14px; }
+    .form-control { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 10px; outline: none; font-family: inherit; font-size: 14px; transition: 0.3s; }
+    .form-control.has-icon { padding-left: 40px; }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+    .pw-eye { position: absolute; right: 15px; background: none; border: none; color: var(--muted); cursor: pointer; }
+    
+    .input-row { display: flex; gap: 15px; }
+    .input-row .form-group { flex: 1; }
+
+    /* Strength Meter */
+    .strength-wrap { margin-top: 8px; }
+    .strength-bar { height: 4px; background: #eee; border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+    .strength-fill { height: 100%; width: 0%; background: var(--danger); transition: 0.3s; }
+    .strength-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+    .forgot-link { font-size: 12px; color: var(--primary); font-weight: 600; cursor: pointer; }
+    .auth-switch { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+    .auth-switch span { color: var(--primary); font-weight: 600; cursor: pointer; margin-left: 5px; }
+
+    /* OTP Styles */
+    .otp-header { text-align: center; margin-bottom: 30px; }
+    .otp-icon { font-size: 40px; margin-bottom: 10px; }
+    .otp-title { font-size: 20px; font-weight: 700; margin-bottom: 5px; }
+    .otp-sub { font-size: 13px; color: var(--muted); }
+    
+    .otp-boxes { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+    .otp-box { width: 45px; height: 50px; border: 1px solid var(--border); border-radius: 10px; text-align: center; font-size: 20px; font-weight: 700; outline: none; transition: 0.3s; }
+    .otp-box:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+    
+    .otp-timer { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .otp-resend { color: var(--primary); font-weight: 600; cursor: pointer; text-decoration: underline; }
+
+    /* Success Anim */
+    .success-wrap { text-align: center; padding: 40px 0; }
+    .success-circle { width: 80px; height: 80px; background: var(--green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px; animation: popIn 0.5s ease; }
+    .success-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+    .success-sub { font-size: 14px; color: var(--muted); margin-bottom: 30px; }
+    .success-progress { height: 4px; background: #eee; border-radius: 2px; overflow: hidden; width: 60%; margin: 0 auto; }
+    .success-bar { height: 100%; width: 0%; background: var(--green); animation: loadBar 2s forwards; }
+
+    /* Modals */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; padding: 20px; }
+    .modal-overlay.show { opacity: 1; pointer-events: auto; }
+    .modal { background: var(--white); width: 100%; border-radius: 20px; transform: translateY(20px); transition: 0.3s; }
+    .modal-overlay.show .modal { transform: translateY(0); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); }
+    .modal-title { font-weight: 700; }
+    .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--muted); }
+    .modal-body { padding: 20px; }
+
+    /* Toasts */
+    #toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; }
+    .toast { background: #333; color: white; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideIn 0.3s ease; }
+
+    @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes loadBar { to { width: 100%; } }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hide-mobile { display: none !important; }
+      .auth-wrapper { flex-direction: column; min-height: auto; border-radius: 16px;}
+      .auth-right { padding: 30px 20px; }
+      .auth-bg { padding: 80px 10px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="auth-nav">
+  <a href="index.html" class="auth-logo">
+    <span class="auth-logo-emoji">🥛</span><span>SS Milk</span>
+  </a>
+  <a href="index.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+</nav>
+
+<div class="auth-bg">
+  <div class="auth-wrapper">
+    <div class="auth-left hide-mobile">
+      <div class="auth-left-emoji">🥛</div>
+      <h2 class="auth-left-title">Pure Dairy,<br>Every Morning</h2>
+      <p class="auth-left-sub">Join thousands of happy customers getting fresh milk, curd and ghee delivered at their doorstep.</p>
+      <div class="auth-feature"><span class="auth-feature-icon">✅</span><span>100% Pure & Verified</span></div>
+      <div class="auth-feature"><span class="auth-feature-icon">🚚</span><span>Free delivery below 5km</span></div>
+      <div class="auth-feature"><span class="auth-feature-icon">🕕</span><span>Delivered by 6AM daily</span></div>
+    </div>
+
+    <div class="auth-right">
+      
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+        <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Create Account</button>
+      </div>
+
+      <div class="auth-form active" id="form-login">
+        <div class="auth-form-header">
+          <h2 class="auth-form-title">Welcome Back! 👋</h2>
+          <p class="auth-form-sub">Sign in to continue to SS Milk</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input type="email" id="l-email" class="form-control has-icon" placeholder="you@example.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label class="form-label">Password</label>
+            <span class="forgot-link" onclick="openForgotModal()">Forgot password?</span>
+          </div>
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="l-password" class="form-control has-icon" placeholder="••••••••">
+            <button class="pw-eye" onclick="togglePw('l-password')"><i class="fa-solid fa-eye"></i></button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full btn-lg" id="login-btn" onclick="handleLogin()">
+          <span id="login-btn-text">Sign In</span>
+        </button>
+
+        <div class="auth-switch">New to SS Milk? <span onclick="switchTab('register')">Create Account</span></div>
+      </div>
+
+      <div class="auth-form hidden" id="form-register">
+        <div class="auth-form-header">
+          <h2 class="auth-form-title">Join SS Milk 🥛</h2>
+          <p class="auth-form-sub">Create your free account in seconds</p>
+        </div>
+
+        <div id="reg-step-1">
+          <div class="input-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" id="r-fname" class="form-control" placeholder="Ravi">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" id="r-lname" class="form-control" placeholder="Kumar">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <div class="input-icon-wrap">
+              <i class="fa-solid fa-envelope input-icon"></i>
+              <input type="email" id="r-email" class="form-control has-icon" placeholder="you@example.com">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-icon-wrap">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="r-password" class="form-control has-icon" placeholder="Min. 8 characters" oninput="checkStrength(this.value)">
+              <button class="pw-eye" onclick="togglePw('r-password')"><i class="fa-solid fa-eye"></i></button>
+            </div>
+            <div class="strength-wrap">
+              <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+              <span class="strength-label" id="strength-label"></span>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-full btn-lg" id="send-otp-btn" onclick="handleRegister()">
+            <span id="otp-btn-text">Send OTP & Continue</span>
+          </button>
+
+          <div class="auth-switch">Already have an account? <span onclick="switchTab('login')">Sign In</span></div>
+        </div>
+
+        <div id="reg-step-2" class="hidden">
+          <div class="otp-header">
+            <div class="otp-icon">📧</div>
+            <div class="otp-title">Check Your Email</div>
+            <div class="otp-sub">We sent a 6-digit code to<br><strong id="otp-email-show"></strong></div>
+          </div>
+
+          <div class="otp-boxes" id="otp-boxes">
+            <input class="otp-box" maxlength="1" type="text" oninput="otpNext(this,1)" id="otp0">
+            <input class="otp-box" maxlength="1" type="text" oninput="otpNext(this,2)" id="otp1">
+            <input class="otp-box" maxlength="1" type="text" oninput="otpNext(this,3)" id="otp2">
+            <input class="otp-box" maxlength="1" type="text" oninput="otpNext(this,4)" id="otp3">
+            <input class="otp-box" maxlength="1" type="text" oninput="otpNext(this,5)" id="otp4">
+            <input class="otp-box" maxlength="1" type="text" id="otp5">
+          </div>
+
+          <button class="btn btn-primary btn-full btn-lg" id="verify-btn" onclick="verifyOTP()">
+            <span id="verify-btn-text">Verify & Create Account</span>
+          </button>
+          <button class="btn btn-outline btn-full" style="margin-top:10px" onclick="backToStep1()">Change Email</button>
+        </div>
+
+        <div id="reg-step-3" class="hidden">
+          <div class="success-wrap">
+            <div class="success-circle"><i class="fa-solid fa-check"></i></div>
+            <div class="success-title">Account Created! 🎉</div>
+            <div class="success-sub">Welcome to SS Milk! Redirecting you to Home…</div>
+            <div class="success-progress"><div class="success-bar"></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="forgot-modal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <span class="modal-title">🔒 Reset Password</span>
+      <button class="modal-close" onclick="closeModal('forgot-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="forgot-step-1">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Enter your registered email and we'll send you a reset link.</p>
+        <div class="form-group">
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input type="email" id="forgot-email" class="form-control has-icon" placeholder="you@example.com">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="sendResetLink()">Send Reset Link</button>
+      </div>
+
+      <div id="forgot-step-2" class="hidden" style="text-align:center;padding:20px 0">
+        <div style="font-size:50px;margin-bottom:14px">📬</div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:8px">Check Your Email!</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">A reset link has been sent.<br>It expires in <strong>1 hour</strong>.</div>
+        <button class="btn btn-outline btn-full" style="margin-top:20px" onclick="closeModal('forgot-modal')">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+  // -- Initialization --
+  if(!localStorage.getItem('db_users')) {
+      localStorage.setItem('db_users', JSON.stringify([]));
+  }
+
+  // -- Tab Switching --
+  function switchTab(tab) {
+    document.getElementById('form-login').classList.add('hidden');
+    document.getElementById('form-register').classList.add('hidden');
+    document.getElementById('tab-login').classList.remove('active');
+    document.getElementById('tab-register').classList.remove('active');
+
+    document.getElementById('form-' + tab).classList.remove('hidden');
+    document.getElementById('tab-' + tab).classList.add('active');
+  }
+
+  // -- UI Helpers --
+  function togglePw(id) {
+    const input = document.getElementById(id);
+    if(input.type === 'password') input.type = 'text';
+    else input.type = 'password';
+  }
+
+  function showToast(msg) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = msg;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // -- Modals --
+  function openForgotModal() { 
+    document.getElementById('forgot-modal').classList.add('show'); 
+    document.getElementById('forgot-step-1').classList.remove('hidden');
+    document.getElementById('forgot-step-2').classList.add('hidden');
+  }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  function sendResetLink() {
+    if(!document.getElementById('forgot-email').value) return showToast("Enter email first");
+    document.getElementById('forgot-step-1').classList.add('hidden');
+    document.getElementById('forgot-step-2').classList.remove('hidden');
+  }
+
+  // -- Password Strength --
+  function checkStrength(val) {
+    const fill = document.getElementById('strength-fill');
+    const label = document.getElementById('strength-label');
+    let strength = 0;
+    if(val.length > 5) strength += 33;
+    if(val.length > 7 && /[0-9]/.test(val)) strength += 33;
+    if(/[A-Z]/.test(val) && /[^A-Za-z0-9]/.test(val)) strength += 34;
+
+    fill.style.width = strength + '%';
+    if(strength < 34) { fill.style.background = 'var(--danger)'; label.innerText = 'Weak'; }
+    else if(strength < 67) { fill.style.background = 'orange'; label.innerText = 'Fair'; }
+    else { fill.style.background = 'var(--green)'; label.innerText = 'Strong'; }
+  }
+
+  // -- LOGIN LOGIC --
+  function handleLogin() {
+    const email = document.getElementById('l-email').value;
+    const pass = document.getElementById('l-password').value;
+    const btnText = document.getElementById('login-btn-text');
+
+    if(!email || !pass) return showToast("Please enter email and password");
+
+    btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
+
+    setTimeout(() => {
+        // Since we don't have a real password check, we just verify if the user exists in db_users
+        let users = JSON.parse(localStorage.getItem('db_users')) || [];
+        let foundUser = users.find(u => u.email === email);
+
+        if(foundUser || email === "admin@ssmilk.com") {
+            // Success
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userName', foundUser ? foundUser.name : "Admin");
+            
+            // Redirect based on role
+            if(email === "admin@ssmilk.com") window.location.href = "admin.html";
+            else window.location.href = "index.html";
+        } else {
+            showToast("Account not found. Please register.");
+            btnText.innerHTML = 'Sign In';
+        }
+    }, 1000);
+  }
+
+  // -- REGISTER LOGIC --
+  let tempUser = {};
+
+  function handleRegister() {
+    const fname = document.getElementById('r-fname').value;
+    const lname = document.getElementById('r-lname').value;
+    const email = document.getElementById('r-email').value;
+    const pass = document.getElementById('r-password').value;
+
+    if(!fname || !email || pass.length < 6) return showToast("Please fill all required fields correctly.");
+
+    tempUser = {
+        name: fname + " " + lname,
+        email: email,
+        role: "Customer",
+        date: new Date().toLocaleDateString('en-IN')
+    };
+
+    const btnText = document.getElementById('otp-btn-text');
+    btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending OTP...';
+
+    setTimeout(() => {
+        document.getElementById('reg-step-1').classList.add('hidden');
+        document.getElementById('reg-step-2').classList.remove('hidden');
+        document.getElementById('otp-email-show').innerText = email;
+        document.getElementById('otp0').focus();
+    }, 1500);
+  }
+
+  // Auto-focus logic for OTP boxes
+  function otpNext(elem, nextIndex) {
+    if(elem.value.length === 1 && nextIndex < 6) {
+        document.getElementById('otp' + nextIndex).focus();
+    }
+  }
+
+  function backToStep1() {
+    document.getElementById('reg-step-2').classList.add('hidden');
+    document.getElementById('reg-step-1').classList.remove('hidden');
+    document.getElementById('otp-btn-text').innerText = 'Send OTP & Continue';
+  }
+
+  function verifyOTP() {
+    const btnText = document.getElementById('verify-btn-text');
+    btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
+
+    setTimeout(() => {
+        // Save user to database
+        let users = JSON.parse(localStorage.getItem('db_users')) || [];
+        users.push(tempUser);
+        localStorage.setItem('db_users', JSON.stringify(users));
+
+        // Log them in immediately
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userName', tempUser.name);
+
+        // Show Success Step
+        document.getElementById('reg-step-2').classList.add('hidden');
+        document.getElementById('reg-step-3').classList.remove('hidden');
+
+        // Redirect after animation finishes
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 2000);
+    }, 1500);
+  }
+</script>
+
+</body>
+</html>

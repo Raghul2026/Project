@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile – SS Milk</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    :root {
+      --primary: #007bff; --bg-color: #f4f6f8; --text-main: #2c2e3e; --muted: #7a7a7a; --border: #eaedf1; --white: #ffffff;
+      --green: #0FBA81; --orange: #FF8C00;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: var(--bg-color); color: var(--text-main); }
+    .hidden { display: none !important; }
+
+    /* Header */
+    .header { background: var(--white); padding: 15px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; }
+    .back-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main); }
+    .title { font-size: 18px; font-weight: 700; }
+
+    .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+
+    /* Tabs */
+    .tabs { display: flex; background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border: 1px solid var(--border);}
+    .tab { flex: 1; text-align: center; padding: 15px; font-weight: 600; cursor: pointer; color: var(--muted); background: #fafafa; border-bottom: 2px solid transparent; transition: 0.3s; }
+    .tab.active { background: white; color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* Profile Form Card */
+    .card { background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid var(--border); }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; }
+    .form-control:focus { border-color: var(--primary); }
+    
+    .btn-primary { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 10px; }
+    
+    /* Orders Card */
+    .order-item { border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+    .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
+    .order-id { font-family: monospace; color: var(--primary); font-weight: bold; }
+    .order-date { font-size: 12px; color: var(--muted); }
+    .order-amt { font-size: 18px; font-weight: 800; margin-top: 5px; }
+    
+    .badge { padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: bold; }
+    .b-pending { background: #FFF4E0; color: var(--orange); }
+    .b-delivered { background: #E6FAF4; color: var(--green); }
+    
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <button class="back-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+  <div class="title">My Account</div>
+</header>
+
+<div class="container">
+  
+  <div class="tabs">
+    <div class="tab active" id="tab-profile" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i> Profile Info</div>
+    <div class="tab" id="tab-orders" onclick="switchTab('orders')"><i class="fa-solid fa-box"></i> Order History</div>
+  </div>
+
+  <div id="view-profile" class="card">
+    <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+      <div style="width: 40px; height: 40px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px;">👤</div>
+      <span id="display-name">Loading...</span>
+    </h3>
+    
+    <div class="form-group">
+      <label>Phone Number (phone)</label>
+      <input type="tel" id="user-phone" class="form-control" placeholder="+91 98765 43210">
+    </div>
+    <div class="form-group">
+      <label>Full Address (address)</label>
+      <textarea id="user-address" class="form-control" rows="3" placeholder="House No, Street Name..."></textarea>
+    </div>
+    <div style="display: flex; gap: 15px;">
+      <div class="form-group" style="flex: 1;">
+        <label>City (city)</label>
+        <input type="text" id="user-city" class="form-control" placeholder="Coimbatore">
+      </div>
+      <div class="form-group" style="flex: 1;">
+        <label>Pincode (pincode)</label>
+        <input type="text" id="user-pincode" class="form-control" placeholder="641001">
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveProfile()"><i class="fa-solid fa-floppy-disk"></i> Save Profile Details</button>
+  </div>
+
+  <div id="view-orders" class="card hidden" style="padding: 15px; background: transparent; border: none; box-shadow: none;">
+    <div id="orders-list">
+      </div>
+  </div>
+
+</div>
+
+<script>
+  window.onload = function() {
+    // Check if coming from a specific hash link (e.g. index.html#orders)
+    if(window.location.hash === '#orders') switchTab('orders');
+    
+    loadProfile();
+    loadOrders();
+  };
+
+  function switchTab(tab) {
+    document.getElementById('tab-profile').classList.remove('active');
+    document.getElementById('tab-orders').classList.remove('active');
+    document.getElementById('view-profile').classList.add('hidden');
+    document.getElementById('view-orders').classList.add('hidden');
+
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('view-' + tab).classList.remove('hidden');
+  }
+
+  // --- PROFILE LOGIC ---
+  function loadProfile() {
+    const userName = localStorage.getItem('userName') || "Guest User";
+    document.getElementById('display-name').innerText = userName;
+
+    const profileData = JSON.parse(localStorage.getItem('userProfile')) || {};
+    if(profileData.phone) document.getElementById('user-phone').value = profileData.phone;
+    if(profileData.address) document.getElementById('user-address').value = profileData.address;
+    if(profileData.city) document.getElementById('user-city').value = profileData.city;
+    if(profileData.pincode) document.getElementById('user-pincode').value = profileData.pincode;
+  }
+
+  function saveProfile() {
+    const data = {
+      phone: document.getElementById('user-phone').value,
+      address: document.getElementById('user-address').value,
+      city: document.getElementById('user-city').value,
+      pincode: document.getElementById('user-pincode').value
+    };
+    
+    localStorage.setItem('userProfile', JSON.stringify(data));
+    
+    // Also sync the full address string to the Cart Address so it autofills during checkout!
+    if(data.address && data.pincode) {
+        localStorage.setItem('deliveryAddress', `${data.address}, ${data.city} - ${data.pincode}`);
+    }
+
+    alert("Profile Saved Successfully!");
+  }
+
+  // --- ORDERS LOGIC ---
+  function loadOrders() {
+    // Read from the global admin database
+    const allOrders = JSON.parse(localStorage.getItem('db_orders')) || [];
+    const currentUser = localStorage.getItem('userName');
+    
+    // Filter orders to only show ones belonging to the logged-in user
+    const myOrders = allOrders.filter(o => o.customer === currentUser);
+    
+    const container = document.getElementById('orders-list');
+    container.innerHTML = "";
+
+    if (myOrders.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="fa-solid fa-box-open" style="font-size: 40px; margin-bottom: 10px; color: #ccc;"></i>
+          <p>You have no order history.</p>
+        </div>`;
+      return;
+    }
+
+    // Display orders (Newest first)
+    myOrders.reverse().forEach(order => {
+      const badgeClass = order.status === 'delivered' ? 'b-delivered' : 'b-pending';
+      const statusText = order.status === 'delivered' ? 'Delivered' : 'Arriving Soon';
+
+      container.innerHTML += `
+        <div class="order-item" style="background: white;">
+          <div class="order-header">
+            <div>
+              <div class="order-id">${order.id}</div>
+              <div class="order-date">${order.date || 'Today'}</div>
+            </div>
+            <div><span class="badge ${badgeClass}">${statusText}</span></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div><div style="font-size: 12px; color: var(--muted);">Total Amount</div><div class="order-amt">₹${order.amount || order.totalAmount}</div></div>
+            <button class="btn-primary" style="width: auto; padding: 8px 15px; margin: 0; font-size: 12px;">Reorder</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+</script>
+</body>
+</html>
