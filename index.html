@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SS Milk – Fresh Dairy Delivered</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: #007bff; --primary-dark: #0056b3; --green: #0FBA81; --danger: #dc3545;
+      --bg-color: #f8f9fa; --text-main: #2c2e3e; --muted: #7a7a7a; --border: #eaedf1; --white: #ffffff;
+      --shadow-sm: 0 2px 10px rgba(0,0,0,0.03); --shadow-md: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: var(--bg-color); color: var(--text-main); overflow-x: hidden; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .hidden { display: none !important; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Buttons */
+    .btn { padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary { background: var(--primary); color: var(--white); box-shadow: 0 4px 10px rgba(0,123,255,0.3); }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-dark { background: var(--text-main); color: var(--white); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    /* Navbar */
+    .navbar { background: var(--white); position: sticky; top: 0; z-index: 1001; padding: 15px 0; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm);}
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap; }
+    
+    .logo { display: flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 800; color: var(--text-main); cursor: pointer; white-space: nowrap; }
+    .logo-emoji { font-size: 26px; }
+    
+    /* Search Bar */
+    .center-search-wrapper { flex: 1; display: flex; justify-content: center; min-width: 250px; max-width: 500px; margin: 0 auto; }
+    .center-search-box { width: 100%; position: relative; display: flex; align-items: center; }
+    .center-search-input { width: 100%; padding: 12px 20px 12px 45px; border-radius: 50px; border: 1px solid var(--border); background: #f8f9fa; font-size: 14px; outline: none; transition: 0.3s; font-family: inherit; }
+    .center-search-input:focus { border-color: var(--primary); background: white; box-shadow: 0 4px 15px rgba(0,123,255,0.1); }
+    .center-search-icon { position: absolute; left: 16px; color: var(--muted); font-size: 16px; }
+
+    .nav-icons { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+    .nav-icon-btn { background: none; border: none; font-size: 20px; color: var(--text-main); cursor: pointer; position: relative; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .nav-badge { position: absolute; top: -2px; right: -2px; background: var(--danger); color: white; font-size: 10px; font-weight: bold; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+
+    /* Hamburger & Sidebar */
+    .hamburger-btn { display: none; background: none; border: none; font-size: 22px; color: var(--text-main); cursor: pointer; padding: 5px; }
+    .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1005; opacity: 0; pointer-events: none; transition: 0.3s; }
+    .sidebar-overlay.show { opacity: 1; pointer-events: auto; }
+    .side-drawer { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: white; z-index: 1006; box-shadow: 2px 0 15px rgba(0,0,0,0.1); transition: 0.3s ease; display: flex; flex-direction: column; }
+    .side-drawer.show { left: 0; }
+    .drawer-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: #fafafa; }
+    .drawer-links { flex: 1; overflow-y: auto; padding: 20px 0; }
+    .drawer-link { display: flex; align-items: center; gap: 15px; padding: 15px 20px; color: var(--text-main); font-weight: 600; font-size: 15px; border-bottom: 1px solid #f0f0f0; transition: 0.2s; }
+    .drawer-link i { color: var(--primary); width: 20px; text-align: center; }
+    .drawer-link:hover { background: #f0f4f8; padding-left: 25px; }
+
+    /* Profile Dropdown */
+    .profile-dropdown { position: relative; }
+    .profile-avatar-btn { background: #f0f4f8; border: none; padding: 5px 12px 5px 5px; border-radius: 50px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
+    .avatar-circle { width: 28px; height: 28px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; }
+    .user-display { font-weight: 600; font-size: 13px; color: var(--text-main); }
+    .dropdown-menu { position: absolute; top: calc(100% + 10px); right: 0; background: white; box-shadow: var(--shadow-md); border-radius: 12px; width: 200px; padding: 10px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: 0.2s; border: 1px solid var(--border); }
+    .dropdown-menu.show { opacity: 1; visibility: visible; transform: translateY(0); }
+    .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+    .dropdown-item:hover { background: #f0f4f8; color: var(--primary); }
+
+    /* Hero Section */
+    .hero-section { background: linear-gradient(135deg, #e3f2fd 0%, #f4f6f8 100%); padding: 60px 0; position: relative; overflow: hidden; }
+    .hero-flex { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+    .hero-text { flex: 1; z-index: 2; }
+    .hero-title { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; color: var(--text-main); }
+    .hero-sub { font-size: 1.1rem; color: var(--muted); margin-bottom: 30px; max-width: 450px; line-height: 1.5; }
+    
+    .hero-visual { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; height: 350px; }
+    .hero-blob { position: absolute; width: 350px; height: 350px; background: var(--primary); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; opacity: 0.1; }
+    .hero-main-emoji { font-size: 150px; position: relative; z-index: 2; }
+
+    /* Products Grid */
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 40px 20px; max-width: 1200px; margin: 0 auto;}
+    .product-card { background: white; border-radius: 20px; padding: 15px; text-align: center; border: 1px solid var(--border); transition: 0.3s; display: flex; flex-direction: column; }
+    .p-icon { font-size: 50px; margin-bottom: 10px; }
+    .p-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+    .p-desc { font-size: 12px; color: var(--muted); margin-bottom: 15px; }
+    .p-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; border-top: 1px dashed var(--border); padding-top: 10px; }
+    .p-price { font-size: 16px; font-weight: 800; color: var(--primary); text-align: left;}
+    .p-add-btn { background: #f0f4f8; color: var(--primary); border: none; width: 35px; height: 35px; border-radius: 10px; font-size: 16px; cursor: pointer; }
+    .p-qty-controls { display: flex; align-items: center; background: var(--primary); border-radius: 10px; height: 35px; }
+    .p-qty-btn { background: none; border: none; color: white; width: 25px; cursor: pointer; font-weight: bold; }
+    .p-qty-display { color: white; font-weight: 700; font-size: 13px; width: 25px; text-align: center; }
+
+    /* Floating Cart */
+    .float-cart-btn { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; background: var(--text-main); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 999; }
+
+    /* ══════════ MOBILE FIXES (THE MAGIC) ══════════ */
+
+    /* Offer Banner */
+    .offer-ticker { background: linear-gradient(135deg,#007bff,#0056b3); color:#fff; padding:10px 20px; text-align:center; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; }
+    .offer-ticker-tag { background:rgba(255,255,255,0.2); border-radius:50px; padding:3px 12px; font-size:12px; letter-spacing:.5px; }
+    .offer-chips { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; padding:10px 20px; background:#f8f9fa; }
+    .offer-chip { background:#fff; border:1.5px solid #007bff; color:#007bff; border-radius:50px; padding:6px 14px; font-size:12px; font-weight:700; cursor:pointer; transition:.2s; white-space:nowrap; }
+    .offer-chip:hover { background:#007bff; color:#fff; }
+    @media (max-width: 768px) {
+      .hamburger-btn { display: block; }
+      .nav-flex { padding-bottom: 10px; }
+      
+      /* Forces search bar to drop to its own line, fixing Image 1 overlap */
+      .center-search-wrapper { order: 3; width: 100%; max-width: 100%; margin-top: 5px; flex-basis: 100%; }
+      .center-search-input { padding: 10px 15px 10px 40px; font-size: 13px; }
+      
+      /* Fixes Hero text sizing from Image 3 */
+      .hero-flex { flex-direction: column; text-align: center; padding: 20px 0; gap: 20px;}
+      .hero-title { font-size: 2rem; line-height: 1.3; }
+      .hero-sub { font-size: 14px; margin: 0 auto 20px; padding: 0 10px; }
+      .hero-visual { height: 200px; }
+      .hero-blob { width: 200px; height: 200px; }
+      .hero-main-emoji { font-size: 100px; }
+
+      /* Fixes Product cards from Image 4 */
+      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 20px 10px;}
+      .product-card { padding: 10px; }
+      .p-icon { font-size: 40px; }
+      .p-title { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .p-price { font-size: 14px; }
+    }
+    @media (min-width: 769px) { .float-cart-btn { display: none !important; }
+}
+
+
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container nav-flex">
+    
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+      <div class="logo" onclick="window.location.href='index.html'">
+        <span class="logo-emoji">🥛</span>
+        <span class="logo-text">SS Milk</span>
+      </div>
+    </div>
+
+    <div class="center-search-wrapper">
+      <div class="center-search-box">
+        <i class="fa-solid fa-magnifying-glass center-search-icon"></i>
+        <input type="text" id="main-search" class="center-search-input" placeholder="Search for milk, curd, ghee..." oninput="filterProducts()">
+      </div>
+    </div>
+
+    <div class="nav-icons">
+      <button class="nav-icon-btn" onclick="window.location.href='add_cart_page.html'">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="nav-badge hidden" id="nav-cart-badge">0</span>
+      </button>
+
+      <button class="btn btn-dark btn-sm" id="btn-login" onclick="window.location.href='user_authentication.html'">Login</button>
+
+      <div class="profile-dropdown hidden" id="profile-dropdown">
+        <button class="profile-avatar-btn" onclick="toggleProfileMenu()">
+          <div class="avatar-circle">U</div>
+          <span class="user-display hide-mobile" id="display-name">User</span>
+        </button>
+        <div class="dropdown-menu" id="dropdown-menu">
+          <a href="Profile.html" class="dropdown-item"><i class="fa-solid fa-user"></i> My Profile</a>
+          <a href="Profile.html#orders" class="dropdown-item"><i class="fa-solid fa-box"></i> My Orders</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item text-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="side-drawer" id="side-drawer">
+  <div class="drawer-header">
+    <div class="logo"><span class="logo-emoji">🥛</span> Menu</div>
+    <button class="nav-icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="drawer-links">
+    <a href="index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="add_cart_page.html" class="drawer-link"><i class="fa-solid fa-cart-shopping"></i> My Cart</a>
+    <a href="Profile.html" class="drawer-link"><i class="fa-solid fa-user"></i> My Profile</a>
+    <a href="Profile.html#orders" class="drawer-link"><i class="fa-solid fa-box"></i> Order History</a>
+    <div style="height: 1px; background: #eee; margin: 15px 0;"></div>
+    <div style="padding: 0 20px; font-size: 12px; color: var(--muted); font-weight: bold; margin-bottom: 10px;">CATEGORIES</div>
+    <a href="#" class="drawer-link" onclick="filterCategory('Milk'); toggleSidebar()"><i class="fa-solid fa-bottle-droplet"></i> Milk</a>
+    <a href="#" class="drawer-link" onclick="filterCategory('Curd'); toggleSidebar()"><i class="fa-solid fa-bowl-food"></i> Curd</a>
+    <a href="#" class="drawer-link" onclick="filterCategory('Ghee'); toggleSidebar()"><i class="fa-solid fa-jar"></i> Ghee & Butter</a>
+  </div>
+</div>
+
+<section class="hero-section">
+  <div class="container hero-flex">
+    <div class="hero-text">
+      <h1 class="hero-title">Nature's White Gold,<br><span style="color:var(--primary)">Delivered Fresh</span></h1>
+      <p class="hero-sub">Pure milk, curd, ghee and more — delivered to your doorstep every morning.</p>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-blob"></div>
+      <div class="hero-main-emoji">🥛</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Offer Ticker + Chips — shown only when active offers exist -->
+<div id="offer-ticker-wrap" style="display:none">
+  <div class="offer-ticker" id="offer-ticker">
+    <i class="fa-solid fa-tag"></i>
+    <span id="offer-ticker-text">Special offers available!</span>
+  </div>
+  <div class="offer-chips" id="offer-chips"></div>
+</div>
+
+<div class="product-grid" id="product-grid"></div>
+
+<button class="float-cart-btn hidden" id="mobile-float-cart" onclick="window.location.href='add_cart_page.html'">
+  <span><i class="fa-solid fa-cart-shopping"></i> View Cart</span>
+  <span id="float-total">₹0</span>
+</button>
+
+<script src="api.js"></script>
+<script>
+    let allProducts = [];
+    let currentCategory = 'All';
+    let searchQuery = '';
+
+    window.onload = async function() {
+        checkAuthStatus();
+        await Promise.all([loadProducts(), loadActiveOffers()]);
+        updateCartBadge();
+    };
+
+    function toggleSidebar() {
+        document.getElementById('side-drawer').classList.toggle('show');
+        document.getElementById('sidebar-overlay').classList.toggle('show');
+    }
+
+    function checkAuthStatus() {
+        const user = getUserData();
+        if (user) {
+            document.getElementById('btn-login').classList.add('hidden');
+            document.getElementById('profile-dropdown').classList.remove('hidden');
+            document.querySelector('.avatar-circle').innerText = user.name.charAt(0).toUpperCase();
+            document.getElementById('display-name').innerText = user.name.split(' ')[0];
+        } else {
+            document.getElementById('btn-login').classList.remove('hidden');
+            document.getElementById('profile-dropdown').classList.add('hidden');
+        }
+    }
+
+    function toggleProfileMenu() { document.getElementById('dropdown-menu').classList.toggle('show'); }
+    function logout() { Auth.logout(); }
+
+    async function loadProducts() {
+        try {
+            const cat = currentCategory !== 'All' ? currentCategory : '';
+            allProducts = await Products.getAll(cat, searchQuery);
+            renderProducts();
+        } catch (err) {
+            document.getElementById('product-grid').innerHTML =
+                '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">Could not load products. Make sure the server is running.</div>';
+        }
+    }
+
+    function filterCategory(cat) { currentCategory = cat; loadProducts(); }
+    async function loadActiveOffers() {
+        try {
+            const offers = await Admin.getActiveOffers();
+            if (!offers || offers.length === 0) {
+                document.getElementById('offer-ticker-wrap').style.display = 'none';
+                return;
+            }
+            document.getElementById('offer-ticker-wrap').style.display = 'block';
+            // Ticker text
+            const best = offers[0];
+            document.getElementById('offer-ticker-text').innerText =
+                `Use code ${best.code} and get \u20B9${best.discount_amt} OFF on orders above \u20B9${best.min_order||0}!`;
+            // Chips
+            const chips = document.getElementById('offer-chips');
+            chips.innerHTML = offers.map(o =>
+                `<div class="offer-chip" onclick="copyOffer('${o.code}','${o.discount_amt}')">
+                    <i class="fa-solid fa-tag"></i> ${o.code} &mdash; \u20B9${o.discount_amt} OFF
+                    ${o.min_order > 0 ? `<span style="font-weight:400;opacity:.8"> on \u20B9${o.min_order}+</span>` : ''}
+                </div>`
+            ).join('');
+        } catch(_) {
+            document.getElementById('offer-ticker-wrap').style.display = 'none';
+        }
+    }
+
+    function copyOffer(code, discount) {
+        navigator.clipboard.writeText(code).catch(()=>{});
+        showToast(`Code "${code}" copied! \u20B9${discount} OFF`, 'success');
+    }
+
+    function filterProducts() {
+        searchQuery = document.getElementById('main-search').value.trim();
+        loadProducts();
+    }
+
+    // Convert Google Drive share URLs to direct image URLs
+    function fixDriveUrl(url) {
+      if (!url) return url;
+      let match = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if (match) return 'https://drive.google.com/uc?export=view&id=' + match[1];
+      match = url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
+      if (match) return 'https://drive.google.com/uc?export=view&id=' + match[1];
+      match = url.match(/drive\.google\.com\/uc\?.*id=([a-zA-Z0-9_-]+)/);
+      if (match && !url.includes('export=view')) return 'https://drive.google.com/uc?export=view&id=' + match[1];
+      return url;
+    }
+
+    function renderProducts() {
+        const grid = document.getElementById('product-grid');
+        grid.innerHTML = '';
+        if (!allProducts.length) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">No products found.</div>';
+            return;
+        }
+        allProducts.forEach(p => {
+            const img = fixDriveUrl(p.image_path) || ('images/' + p.name.toLowerCase().replace(/ /g,'_') + '.png');
+            grid.innerHTML += `
+                <div class="product-card">
+                    <div class="p-icon">
+                        <img src="${img}" alt="${p.name}" style="width:80px;height:80px;object-fit:contain"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='block'" referrerpolicy="no-referrer">
+                        <span style="display:none;font-size:50px">&#x1F95B;</span>
+                    </div>
+                    <div class="p-title">${p.name}</div>
+                    <div class="p-desc">${p.unit}</div>
+                    <div class="p-bottom">
+                        <div class="p-price">&#x20B9;${p.price}</div>
+                        <button class="p-add-btn" onclick="addToCart(${p.id})">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    async function addToCart(productId) {
+        if (!isLoggedIn()) return window.location.href = 'user_authentication.html';
+        try {
+            await Cart.add(productId, 1);
+            showToast('Added to cart!', 'success');
+            updateCartBadge();
+        } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    async function updateCartBadge() {
+        if (!isLoggedIn()) return;
+        try {
+            const items = await Cart.get();
+            const total = items.reduce((s,i) => s + i.qty, 0);
+            const price = items.reduce((s,i) => s + i.price * i.qty, 0);
+            const badge = document.getElementById('nav-cart-badge');
+            if (total > 0) { badge.innerText = total; badge.classList.remove('hidden'); }
+            else { badge.classList.add('hidden'); }
+            const floatBtn = document.getElementById('mobile-float-cart');
+            if (total > 0 && window.innerWidth <= 768) {
+                floatBtn.classList.remove('hidden');
+                document.getElementById('float-total').innerText = '\u20B9' + price;
+            } else { floatBtn.classList.add('hidden'); }
+        } catch(_) {}
+    }
+
+    // Contact form
+    async function submitContact(e) {
+      e.preventDefault();
+      const name    = document.getElementById('c-name').value.trim();
+      const email   = document.getElementById('c-email').value.trim();
+      const phone   = document.getElementById('c-phone').value.trim();
+      const subject = document.getElementById('c-subject').value.trim();
+      const message = document.getElementById('c-message').value.trim();
+      if (!name||!email||!message) { showToast('Name, email and message are required','warning'); return; }
+      try {
+        await Contact.send({name,email,phone,subject,message});
+        showToast('Message sent! We will get back to you soon.','success');
+        document.getElementById('contact-form').reset();
+      } catch(err) { showToast(err.message||'Failed to send','error'); }
+    }
+</script>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer style="background:#1A2438;color:#fff;padding:50px 0 30px;margin-top:40px">
+  <div class="container" style="max-width:1200px;margin:0 auto;padding:0 20px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;margin-bottom:30px">
+      <!-- About -->
+      <div>
+        <div style="font-size:20px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+          <img src="images/SS_Logo.png" alt="SS Milk" style="width:36px;height:36px;object-fit:contain"> SS Milk
+        </div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6">
+          Pure milk, curd, ghee and more — delivered fresh to your doorstep every morning in Coimbatore.
+        </p>
+      </div>
+      <!-- Quick Links -->
+      <div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.5)">Quick Links</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none"><i class="fa-solid fa-house" style="width:16px"></i> Home</a>
+          <a href="add_cart_page.html" style="color:rgba(255,255,255,0.7);text-decoration:none"><i class="fa-solid fa-cart-shopping" style="width:16px"></i> My Cart</a>
+          <a href="Profile.html" style="color:rgba(255,255,255,0.7);text-decoration:none"><i class="fa-solid fa-user" style="width:16px"></i> Profile</a>
+          <a href="Profile.html#orders" style="color:rgba(255,255,255,0.7);text-decoration:none"><i class="fa-solid fa-box" style="width:16px"></i> Orders</a>
+        </div>
+      </div>
+      <!-- Contact Form -->
+      <div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.5)">Contact Us</div>
+        <form id="contact-form" onsubmit="submitContact(event)" style="display:flex;flex-direction:column;gap:8px">
+          <input id="c-name" placeholder="Your Name *" required style="padding:10px 12px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);border-radius:8px;color:#fff;font-family:inherit;font-size:13px;outline:none">
+          <input id="c-email" type="email" placeholder="Email *" required style="padding:10px 12px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);border-radius:8px;color:#fff;font-family:inherit;font-size:13px;outline:none">
+          <input id="c-phone" placeholder="Phone (optional)" style="padding:10px 12px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);border-radius:8px;color:#fff;font-family:inherit;font-size:13px;outline:none">
+          <input id="c-subject" placeholder="Subject" style="padding:10px 12px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);border-radius:8px;color:#fff;font-family:inherit;font-size:13px;outline:none">
+          <textarea id="c-message" placeholder="Your Message *" rows="3" required style="padding:10px 12px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);border-radius:8px;color:#fff;font-family:inherit;font-size:13px;outline:none;resize:none"></textarea>
+          <button type="submit" class="btn btn-primary" style="padding:10px;font-size:13px"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+        </form>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;text-align:center;font-size:12px;color:rgba(255,255,255,0.35)">
+      © 2025 SS Milk Dairy. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<style>
+  @media (max-width: 768px) {
+    footer .container > div:first-child { grid-template-columns: 1fr !important; gap: 25px !important; }
+  }
+</style>
+</body>
+</html>
