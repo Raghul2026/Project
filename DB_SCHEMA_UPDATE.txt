@@ -1,0 +1,282 @@
+================================================================================
+DATABASE.SQL UPDATED - COMPLETE SCHEMA FOR NEW INSTALLATIONS
+================================================================================
+
+Date: March 25, 2026
+Status: ✅ COMPLETE
+
+The database.sql file has been updated to include ALL new features and columns
+for fresh database installations. No need to run separate migration files.
+
+================================================================================
+NEW ADDITIONS TO DATABASE.SQL
+================================================================================
+
+1. USERS TABLE - Added is_active column
+   ────────────────────────────────────
+   Before: No soft delete support
+   After:  is_active TINYINT(1) DEFAULT 1  -- For soft delete support
+   
+   Benefit: Can deactivate users without deleting records
+
+
+2. PRODUCTS TABLE - Added payment_methods column
+   ──────────────────────────────────────────────
+   Before: No payment method restrictions
+   After:  payment_methods JSON DEFAULT '["cod","upi"]'
+   
+   Benefit: Set payment methods per product (COD, UPI, or both)
+
+
+3. ORDERS TABLE - Added 5 new columns
+   ───────────────────────────────────
+   Before: Basic order tracking
+   After:  
+   - delivery_otp_generated_at DATETIME         -- When OTP was generated
+   - otp_verified TINYINT(1) DEFAULT 0          -- OTP verification status
+   - delivered_at DATETIME                      -- When order was delivered
+   - delivery_person_name VARCHAR(120)          -- Delivery person name
+   - delivery_person_phone VARCHAR(20)          -- Delivery person phone
+   
+   Benefit: Enhanced delivery tracking and OTP management
+
+
+4. OFFER CODES TABLE - Added 2 new columns
+   ────────────────────────────────────────
+   Before: Only fixed discount amounts
+   After:
+   - discount_type ENUM('fixed', 'percentage') -- Type of discount
+   - discount_value DECIMAL(10,2)              -- Actual discount value
+   
+   Benefit: Support both fixed amount (₹100) and percentage (25%) discounts
+   Legacy:  discount_amt field retained for backward compatibility
+
+
+5. PERFORMANCE INDEXES - Added 5 indexes
+   ────────────────────────────────────
+   - idx_orders_status_user ON orders(status, user_id)
+   - idx_offer_codes_active ON offer_codes(is_active, expires_at)
+   - idx_products_active ON products(is_active)
+   - idx_cart_user ON cart_items(user_id)
+   - idx_users_email ON users(email)
+   
+   Benefit: Faster database queries
+
+
+6. SEED DATA UPDATED
+   ──────────────────
+   Offers now include discount_type and discount_value:
+   
+   Before:
+   INSERT INTO offer_codes (code, discount_amt, min_order) VALUES
+   ('FEST10', 20.00, 50.00);
+   
+   After:
+   INSERT INTO offer_codes (code, discount_amt, discount_type, discount_value, min_order) VALUES
+   ('FEST10', 20.00, 'fixed', 20.00, 50.00);
+
+================================================================================
+COMPLETE SCHEMA COMPARISON
+================================================================================
+
+Table Structure Summary:
+
+1. users
+   - id, name, email, password_hash, phone, role, is_verified
+   + is_active (NEW)
+
+2. email_otps
+   - id, email, otp, expires_at, used, created_at
+
+3. products
+   - id, name, category, price, unit, description, image_path, stock_qty, stock_max, is_active
+   + payment_methods (NEW - JSON array: ["cod","upi"])
+
+4. user_addresses
+   - id, user_id, label, full_address, city, pincode, latitude, longitude, is_default, created_at
+
+5. cart_items
+   - id, user_id, product_id, qty, added_at
+
+6. orders
+   - id, user_id, address_id, delivery_address, delivery_lat, delivery_lng, distance_km
+   - subtotal, delivery_fee, discount, total_amount
+   - payment_method, payment_status, status
+   - delivery_otp
+   + delivery_otp_generated_at (NEW)
+   + otp_verified (NEW)
+   + delivered_at (NEW)
+   + delivery_person_name (NEW)
+   + delivery_person_phone (NEW)
+   - schedule_date, schedule_slot, notes
+   - created_at, updated_at
+
+7. order_items
+   - id, order_id, product_id, name, unit, price, qty
+
+8. offer_codes
+   - id, code, discount_amt
+   + discount_type (NEW - ENUM: 'fixed', 'percentage')
+   + discount_value (NEW - DECIMAL 10,2)
+   - min_order, is_active, expires_at, created_at
+
+9. activity_log
+   - id, action, performed_by, created_at
+
+INDEXES:
++ idx_orders_status_user (NEW)
++ idx_offer_codes_active (NEW)
++ idx_products_active (NEW)
++ idx_cart_user (NEW)
++ idx_users_email (NEW)
+
+================================================================================
+USAGE FOR NEW INSTALLATIONS
+================================================================================
+
+To set up a new database from scratch, just run:
+
+mysql -u root -p < database.sql
+
+This single command will:
+✅ Create database
+✅ Create all 9 tables with proper structure
+✅ Add all new columns for new features
+✅ Create performance indexes
+✅ Seed default products
+✅ Seed default offers
+
+No separate migration files needed!
+
+================================================================================
+FOR EXISTING INSTALLATIONS
+================================================================================
+
+If you have an existing database and want to add these new features, you still
+need to run the migration file:
+
+mysql -u root -p ssmilk_db < migration_features.sql
+
+OR manually apply these ALTER statements:
+
+-- Add payment_methods to products
+ALTER TABLE products ADD COLUMN payment_methods JSON DEFAULT '["cod","upi"]';
+
+-- Add discount type support to offers
+ALTER TABLE offer_codes ADD COLUMN discount_type ENUM('fixed', 'percentage') DEFAULT 'fixed';
+ALTER TABLE offer_codes ADD COLUMN discount_value DECIMAL(10,2) DEFAULT 0;
+UPDATE offer_codes SET discount_type = 'fixed', discount_value = discount_amt;
+
+-- Add OTP tracking to orders
+ALTER TABLE orders ADD COLUMN delivery_otp_generated_at DATETIME;
+ALTER TABLE orders ADD COLUMN otp_verified TINYINT(1) DEFAULT 0;
+ALTER TABLE orders ADD COLUMN delivered_at DATETIME;
+ALTER TABLE orders ADD COLUMN delivery_person_name VARCHAR(120);
+ALTER TABLE orders ADD COLUMN delivery_person_phone VARCHAR(20);
+
+-- Add user deactivation support
+ALTER TABLE users ADD COLUMN is_active TINYINT(1) DEFAULT 1;
+
+-- Add performance indexes
+CREATE INDEX idx_orders_status_user ON orders(status, user_id);
+CREATE INDEX idx_offer_codes_active ON offer_codes(is_active, expires_at);
+CREATE INDEX idx_products_active ON products(is_active);
+CREATE INDEX idx_cart_user ON cart_items(user_id);
+CREATE INDEX idx_users_email ON users(email);
+
+================================================================================
+FEATURE ENABLEMENT
+================================================================================
+
+With this updated schema, the following features are now available:
+
+✅ Feature 1: Payment Method Control
+   - Each product can specify accepted payment methods
+   - Customers can only order with allowed payment methods
+
+✅ Feature 2: Flexible Discounts
+   - Create fixed discount offers (₹100 OFF)
+   - Create percentage discount offers (25% OFF)
+   - Discounts automatically calculated on orders
+
+✅ Feature 3: Enhanced Delivery Management
+   - OTP generation after "out_for_delivery" status
+   - Delivery person tracking (name, phone)
+   - Delivery timestamp tracking
+
+✅ Feature 4: User Management
+   - Soft delete users via is_active flag
+   - Deactivate without losing data
+   - Reactivate when needed
+
+✅ Feature 5: Performance Optimization
+   - 5 new indexes for faster queries
+   - Optimized order lookups
+   - Optimized offer lookups
+   - Optimized product filters
+
+================================================================================
+BACKWARD COMPATIBILITY
+================================================================================
+
+✅ All existing data remains intact
+✅ All new columns have default values
+✅ Legacy discount_amt field preserved
+✅ No breaking changes to API contracts
+✅ All existing features continue to work
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+After running database.sql, verify:
+
+☐ Database created: ssmilk_db
+☐ 9 tables created
+☐ 10 default products seeded
+☐ 2 default offers seeded
+☐ All new columns present
+☐ All indexes created
+☐ Foreign keys working
+☐ Cascading deletes configured
+☐ Timestamps set correctly
+☐ Defaults applied correctly
+
+Test queries:
+
+1. Check products with payment_methods:
+   SELECT id, name, payment_methods FROM products LIMIT 1;
+   Should show: payment_methods = '["cod","upi"]'
+
+2. Check offers with discount_type:
+   SELECT code, discount_type, discount_value FROM offer_codes;
+   Should show: discount_type and discount_value columns
+
+3. Check orders with delivery tracking:
+   DESCRIBE orders;
+   Should show: delivery_otp_generated_at, otp_verified, delivered_at
+
+4. Check indexes:
+   SHOW INDEX FROM orders WHERE Key_name = 'idx_orders_status_user';
+   Should show index exists
+
+================================================================================
+SUMMARY
+================================================================================
+
+✅ database.sql updated with complete schema
+✅ All 6 feature columns added
+✅ Performance indexes added
+✅ Seed data updated
+✅ Backward compatible
+✅ Ready for new installations
+✅ No additional migration needed for new setups
+
+Files in project:
+- database.sql (UPDATED - Complete schema)
+- migration_features.sql (KEEPS - For existing installations)
+
+For new installations: Use database.sql only
+For existing installations: Use migration_features.sql
+
+================================================================================
